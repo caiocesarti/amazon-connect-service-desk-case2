@@ -1,0 +1,319 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nuvemtech.example.com/schemas/service_desk.schema.json",
+  "title": "NuvemTech Service Desk Dataset Schema",
+  "description": "Schema de validação do dataset simulado do Service Desk Interno de TI (Case 2).",
+  "type": "object",
+  "required": [
+    "versao",
+    "empresa",
+    "unidades",
+    "colaboradores",
+    "catalogo_hardware",
+    "incidentes_ativos",
+    "chamados"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "versao": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "empresa": {
+      "type": "string",
+      "minLength": 3
+    },
+    "unidades": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "codigo",
+          "cidade",
+          "uf",
+          "tecnicos_presenciais",
+          "sla_hardware_dias_uteis",
+          "suporte_local"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "cidade": {
+            "type": "string",
+            "minLength": 2
+          },
+          "uf": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "tecnicos_presenciais": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sla_hardware_dias_uteis": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "suporte_local": {
+            "type": "boolean"
+          },
+          "observacao": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "colaboradores": {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "required": [
+          "matricula",
+          "nome_completo",
+          "primeiro_nome",
+          "email",
+          "unidade",
+          "departamento",
+          "cargo",
+          "status_conta",
+          "vip_diretoria",
+          "pin_verificacao"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "matricula": {
+            "type": "string",
+            "pattern": "^NT\\d{4}$"
+          },
+          "nome_completo": {
+            "type": "string",
+            "minLength": 5
+          },
+          "primeiro_nome": {
+            "type": "string",
+            "minLength": 2
+          },
+          "email": {
+            "type": "string",
+            "pattern": "^[a-z0-9._-]+@nuvemtech\\.com\\.br$"
+          },
+          "unidade": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "departamento": {
+            "type": "string",
+            "enum": [
+              "ENGENHARIA",
+              "FINANCEIRO",
+              "COMERCIAL",
+              "RH",
+              "OPERACOES",
+              "JURIDICO",
+              "DIRETORIA",
+              "SEGURANCA_INFO"
+            ]
+          },
+          "cargo": {
+            "type": "string",
+            "minLength": 3
+          },
+          "status_conta": {
+            "type": "string",
+            "enum": ["ATIVO", "BLOQUEADO", "INATIVO"]
+          },
+          "vip_diretoria": {
+            "type": "boolean"
+          },
+          "pin_verificacao": {
+            "type": "string",
+            "pattern": "^\\d{4}$"
+          }
+        }
+      }
+    },
+    "catalogo_hardware": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "object",
+        "required": [
+          "codigo",
+          "nome",
+          "categoria",
+          "sinonimos",
+          "estoque_disponivel",
+          "requer_aprovacao_gestor",
+          "alternativa_sugerida",
+          "prazo_padrao_dias"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_]+$"
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 3
+          },
+          "categoria": {
+            "type": "string",
+            "enum": ["COMPUTADOR", "MONITOR", "PERIFERICO", "REDE_ACESSO", "MOBILIDADE"]
+          },
+          "sinonimos": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 2 }
+          },
+          "estoque_disponivel": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "requer_aprovacao_gestor": {
+            "type": "boolean"
+          },
+          "alternativa_sugerida": {
+            "type": ["string", "null"]
+          },
+          "prazo_padrao_dias": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "incidentes_ativos": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "titulo",
+          "categoria",
+          "subcategoria",
+          "unidades_afetadas",
+          "prioridade",
+          "status",
+          "previsao_normalizacao",
+          "orientacao_colaborador"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^INC-\\d{4}$"
+          },
+          "titulo": {
+            "type": "string",
+            "minLength": 5
+          },
+          "categoria": {
+            "type": "string",
+            "enum": ["ACESSO_SEGURANCA", "REDE_CONECTIVIDADE", "HARDWARE", "GERAL"]
+          },
+          "subcategoria": {
+            "type": "string",
+            "enum": ["SENHA_AD", "MFA", "VPN", "WIFI", "SEM_INTERNET", "DNS", "SISTEMA_INTERNO"]
+          },
+          "unidades_afetadas": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^[A-Z]{3}$" }
+          },
+          "prioridade": {
+            "type": "string",
+            "enum": ["P1", "P2", "P3", "P4"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["EM_ANDAMENTO", "MONITORANDO", "RESOLVIDO"]
+          },
+          "previsao_normalizacao": {
+            "type": "string"
+          },
+          "orientacao_colaborador": {
+            "type": "string",
+            "minLength": 10
+          }
+        }
+      }
+    },
+    "chamados": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "protocolo",
+          "matricula",
+          "intencao",
+          "categoria",
+          "prioridade",
+          "status",
+          "fila_destino",
+          "resumo",
+          "atualizado_em"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "protocolo": {
+            "type": "string",
+            "pattern": "^SD-\\d{8}-[A-F0-9]{6}$"
+          },
+          "matricula": {
+            "type": "string",
+            "pattern": "^NT\\d{4}$"
+          },
+          "intencao": {
+            "type": "string",
+            "enum": ["PasswordReset", "NetworkIssue", "HardwareRequest"]
+          },
+          "categoria": {
+            "type": "string",
+            "enum": ["ACESSO_SEGURANCA", "REDE_CONECTIVIDADE", "HARDWARE", "GERAL"]
+          },
+          "prioridade": {
+            "type": "string",
+            "enum": ["P1", "P2", "P3", "P4"]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ABERTO",
+              "EM_ATENDIMENTO",
+              "AGUARDANDO_APROVACAO",
+              "AGUARDANDO_ESTOQUE",
+              "ENVIADO_LOGISTICA",
+              "RESOLVIDO",
+              "CANCELADO"
+            ]
+          },
+          "fila_destino": {
+            "type": "string",
+            "enum": ["SEGURANCA", "REDES", "HARDWARE", "GERAL_N1", "PRIORITARIA_P1"]
+          },
+          "equipamento": {
+            "type": ["string", "null"]
+          },
+          "resumo": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 256
+          },
+          "atualizado_em": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+<!--
+  TEMPLATE DE EXEMPLO DO COMMUNICATIONS WIDGET (AMAZON CONNECT)
+  =============================================================
+  Este arquivo contém APENAS PLACEHOLDERS e pode ser versionado com segurança.
+  Para uso local com sua instância real:
+    1. Copie este arquivo para landing/widget-snippet.local.html (ignorado pelo git)
+    2. Cole o snippet oficial gerado em Amazon Connect -> Channels -> Communication widgets
+    3. Execute: python scripts/injetar_widget.py
+-->
+<script type="text/javascript">
+  (function(w, d, x, id){
+    s=d.createElement('script');
+    s.src='https://<INSTANCE_ALIAS>.my.connect.aws/connectwidget/static/amazon-connect-chat-interface-client.js';
+    s.async=1;
+    s.id=id;
+    d.getElementsByTagName('head')[0].appendChild(s);
+    w[x] =  w[x] || function() { (w[x].ac = w[x].ac || []).push(arguments) };
+  })(window, document, 'amazon_connect', '<WIDGET_ID>');
+  amazon_connect('styles', { iconType: 'CHAT_VOICE', openChat: { color: '#ffffff', backgroundColor: '#4f46e5' }, closeChat: { color: '#ffffff', backgroundColor: '#4f46e5' } });
+  amazon_connect('snippetId', '<SNIPPET_ID>');
+  amazon_connect('supportedMessagingContentTypes', [ 'text/plain', 'text/markdown' ]);
+</script>

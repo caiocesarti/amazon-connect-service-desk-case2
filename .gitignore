@@ -1,0 +1,60 @@
+# ============================================================================
+# NuvemTech Service Desk - .gitignore (política Zero-Leak)
+# ============================================================================
+
+# --- Segredos e configurações locais (NUNCA versionar) ---------------------
+.env
+.env.*
+!.env.example
+*.local.*
+landing/widget-snippet.local.html
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+credentials
+credentials.csv
+*accessKeys*.csv
+.aws/
+.vercel/
+
+# --- Exports brutos do console AWS (sanitize antes de versionar) -----------
+exports/
+*.raw.json
+
+# --- Material de referência de uso interno (não redistribuir) -------------
+Case_*.pdf
+referencias/
+
+# --- Artefatos de build ------------------------------------------------------
+dist/
+landing/dist/
+*.zip
+lambda/sd_fulfillment/dados/
+
+# --- Python ------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+*.egg-info/
+
+# --- Node (caso use Vercel CLI localmente) -----------------------------------
+node_modules/
+
+# --- IDE / SO ----------------------------------------------------------------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

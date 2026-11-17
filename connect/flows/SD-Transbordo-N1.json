@@ -1,0 +1,440 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "bloco-gravar-contexto-transbordo",
+  "Metadata": {
+    "entryPointPosition": {
+      "x": 40,
+      "y": 220
+    },
+    "snapToGrid": true,
+    "ActionMetadata": {
+      "bloco-gravar-contexto-transbordo": {
+        "position": {
+          "x": 240,
+          "y": 260
+        }
+      },
+      "bloco-definir-sussurro-agente": {
+        "position": {
+          "x": 520,
+          "y": 260
+        }
+      },
+      "bloco-selecionar-fila-por-chave": {
+        "position": {
+          "x": 800,
+          "y": 260
+        }
+      },
+      "bloco-fila-prioritaria-p1": {
+        "position": {
+          "x": 1120,
+          "y": 40
+        }
+      },
+      "bloco-fila-seguranca": {
+        "position": {
+          "x": 1120,
+          "y": 200
+        }
+      },
+      "bloco-fila-redes": {
+        "position": {
+          "x": 1120,
+          "y": 360
+        }
+      },
+      "bloco-fila-hardware": {
+        "position": {
+          "x": 1120,
+          "y": 520
+        }
+      },
+      "bloco-fila-geral-n1": {
+        "position": {
+          "x": 1120,
+          "y": 680
+        }
+      },
+      "bloco-verificar-horario-operacao": {
+        "position": {
+          "x": 1460,
+          "y": 260
+        }
+      },
+      "bloco-horario-aberto": {
+        "position": {
+          "x": 1760,
+          "y": 140
+        }
+      },
+      "bloco-horario-fechado": {
+        "position": {
+          "x": 1760,
+          "y": 440
+        }
+      },
+      "bloco-transferir-para-fila": {
+        "position": {
+          "x": 2060,
+          "y": 140
+        }
+      },
+      "bloco-msg-fila-cheia": {
+        "position": {
+          "x": 2360,
+          "y": 140
+        }
+      },
+      "bloco-msg-fora-horario": {
+        "position": {
+          "x": 2060,
+          "y": 440
+        }
+      },
+      "bloco-transferir-erro-generico": {
+        "position": {
+          "x": 2360,
+          "y": 360
+        }
+      },
+      "bloco-encerrar-fora-horario": {
+        "position": {
+          "x": 2660,
+          "y": 280
+        }
+      }
+    },
+    "flowName": "SD-Transbordo-N1",
+    "flowDescription": "Preservação de contexto sd_*, verificação de horário comercial e roteamento inteligente por chave lógica para filas segmentadas."
+  },
+  "Actions": [
+    {
+      "Identifier": "bloco-gravar-contexto-transbordo",
+      "Type": "UpdateContactAttributes",
+      "Parameters": {
+        "Attributes": {
+          "sd_resumo": "$.Attributes.sd_resumo",
+          "sd_motivo_transbordo": "$.Attributes.sd_motivo_transbordo",
+          "sd_fila_destino": "$.Attributes.sd_fila_destino",
+          "sd_prioridade": "$.Attributes.sd_prioridade",
+          "sd_protocolo": "$.Attributes.sd_protocolo"
+        }
+      },
+      "Transitions": {
+        "NextAction": "bloco-definir-sussurro-agente",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-definir-sussurro-agente"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-definir-sussurro-agente",
+      "Type": "UpdateContactEventHooks",
+      "Parameters": {
+        "EventHooks": {
+          "AgentWhisper": "arn:aws:connect:<REGION>:000000000000:instance/<INSTANCE_ID>/contact-flow/<FLOW_ID_SUSSURRO_AGENTE>"
+        }
+      },
+      "Transitions": {
+        "NextAction": "bloco-selecionar-fila-por-chave",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-selecionar-fila-por-chave"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-selecionar-fila-por-chave",
+      "Type": "Compare",
+      "Parameters": {
+        "ComparisonValue": "$.Attributes.sd_fila_destino"
+      },
+      "Transitions": {
+        "NextAction": "bloco-fila-geral-n1",
+        "Conditions": [
+          {
+            "NextAction": "bloco-fila-prioritaria-p1",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "PRIORITARIA_P1"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-fila-seguranca",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "SEGURANCA"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-fila-redes",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "REDES"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-fila-hardware",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "HARDWARE"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-fila-geral-n1",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "GERAL_N1"
+              ]
+            }
+          }
+        ],
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingCondition",
+            "NextAction": "bloco-fila-geral-n1"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-fila-prioritaria-p1",
+      "Type": "UpdateContactTargetQueue",
+      "Parameters": {
+        "QueueId": "arn:aws:connect:<REGION>:000000000000:instance/<INSTANCE_ID>/queue/<QUEUE_ID_PRIORITARIA_P1>"
+      },
+      "Transitions": {
+        "NextAction": "bloco-verificar-horario-operacao",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-fila-geral-n1"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-fila-seguranca",
+      "Type": "UpdateContactTargetQueue",
+      "Parameters": {
+        "QueueId": "arn:aws:connect:<REGION>:000000000000:instance/<INSTANCE_ID>/queue/<QUEUE_ID_SEGURANCA>"
+      },
+      "Transitions": {
+        "NextAction": "bloco-verificar-horario-operacao",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-fila-geral-n1"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-fila-redes",
+      "Type": "UpdateContactTargetQueue",
+      "Parameters": {
+        "QueueId": "arn:aws:connect:<REGION>:000000000000:instance/<INSTANCE_ID>/queue/<QUEUE_ID_REDES>"
+      },
+      "Transitions": {
+        "NextAction": "bloco-verificar-horario-operacao",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-fila-geral-n1"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-fila-hardware",
+      "Type": "UpdateContactTargetQueue",
+      "Parameters": {
+        "QueueId": "arn:aws:connect:<REGION>:000000000000:instance/<INSTANCE_ID>/queue/<QUEUE_ID_HARDWARE>"
+      },
+      "Transitions": {
+        "NextAction": "bloco-verificar-horario-operacao",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-fila-geral-n1"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-fila-geral-n1",
+      "Type": "UpdateContactTargetQueue",
+      "Parameters": {
+        "QueueId": "arn:aws:connect:<REGION>:000000000000:instance/<INSTANCE_ID>/queue/<QUEUE_ID_GERAL_N1>"
+      },
+      "Transitions": {
+        "NextAction": "bloco-verificar-horario-operacao",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-transferir-erro-generico"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-verificar-horario-operacao",
+      "Type": "CheckHoursOfOperation",
+      "Parameters": {
+        "HoursOfOperationId": "arn:aws:connect:<REGION>:000000000000:instance/<INSTANCE_ID>/operating-hours/<HOURS_ID_COMERCIAL>"
+      },
+      "Transitions": {
+        "NextAction": "bloco-horario-aberto",
+        "Conditions": [
+          {
+            "NextAction": "bloco-horario-aberto",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "True"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-horario-fechado",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "False"
+              ]
+            }
+          }
+        ],
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-horario-aberto"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-horario-aberto",
+      "Type": "UpdateContactAttributes",
+      "Parameters": {
+        "Attributes": {
+          "sd_horario_status": "ABERTO"
+        }
+      },
+      "Transitions": {
+        "NextAction": "bloco-transferir-para-fila",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-transferir-para-fila"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-horario-fechado",
+      "Type": "UpdateContactAttributes",
+      "Parameters": {
+        "Attributes": {
+          "sd_horario_status": "FECHADO"
+        }
+      },
+      "Transitions": {
+        "NextAction": "bloco-msg-fora-horario",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-msg-fora-horario"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-msg-fora-horario",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Nosso atendimento humano N1 opera de segunda a sexta, das 08h às 18h (horário de Brasília). Seu protocolo $.Attributes.sd_protocolo já está registrado com prioridade $.Attributes.sd_prioridade e será tratado no início do próximo expediente."
+      },
+      "Transitions": {
+        "NextAction": "bloco-encerrar-fora-horario",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-encerrar-fora-horario"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-transferir-para-fila",
+      "Type": "TransferContactToQueue",
+      "Parameters": {},
+      "Transitions": {
+        "NextAction": "bloco-transferir-erro-generico",
+        "Errors": [
+          {
+            "ErrorType": "QueueAtCapacity",
+            "NextAction": "bloco-msg-fila-cheia"
+          },
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-transferir-erro-generico"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-msg-fila-cheia",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Todos os analistas da fila $.Attributes.sd_fila_destino estão ocupados no momento. Seu chamado $.Attributes.sd_protocolo segue priorizado e será atendido em breve."
+      },
+      "Transitions": {
+        "NextAction": "bloco-encerrar-fora-horario",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-encerrar-fora-horario"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-transferir-erro-generico",
+      "Type": "TransferToFlow",
+      "Parameters": {
+        "ContactFlowId": "arn:aws:connect:<REGION>:000000000000:instance/<INSTANCE_ID>/contact-flow/<FLOW_ID_ERRO_GENERICO>"
+      },
+      "Transitions": {
+        "NextAction": "bloco-encerrar-fora-horario",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-encerrar-fora-horario"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-encerrar-fora-horario",
+      "Type": "DisconnectParticipant",
+      "Parameters": {},
+      "Transitions": {}
+    }
+  ]
+}

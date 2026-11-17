@@ -1,0 +1,57 @@
+{
+  "versao": "1.0.0",
+  "domainName": "sd-cases-domain",
+  "templateName": "SD-Template-Chamado-TI",
+  "description": "Template padronizado de chamados de TI do NuvemTech Service Desk (Hardware, Rede e Segurança).",
+  "statusInicialPadrao": "ABERTO",
+  "campos": [
+    {
+      "id": "title",
+      "tipo": "Text",
+      "obrigatorio": true,
+      "descricao": "Título resumido do chamado (ex.: Solicitação de Notebook Corporativo - NT1008)"
+    },
+    {
+      "id": "summary",
+      "tipo": "Text",
+      "obrigatorio": true,
+      "descricao": "Resumo de contexto gerado pela Lambda (sd_resumo)"
+    },
+    {
+      "id": "sd_protocolo",
+      "tipo": "Text",
+      "obrigatorio": true,
+      "descricao": "Protocolo determinístico no formato SD-AAAAMMDD-XXXXXX"
+    },
+    {
+      "id": "sd_categoria",
+      "tipo": "SingleSelect",
+      "obrigatorio": true,
+      "opcoes": ["ACESSO_SEGURANCA", "REDE_CONECTIVIDADE", "HARDWARE", "GERAL"]
+    },
+    {
+      "id": "sd_prioridade",
+      "tipo": "SingleSelect",
+      "obrigatorio": true,
+      "opcoes": ["P1", "P2", "P3", "P4"]
+    },
+    {
+      "id": "sd_matricula",
+      "tipo": "Text",
+      "obrigatorio": false,
+      "descricao": "Matrícula fictícia do colaborador (NTxxxx)"
+    },
+    {
+      "id": "sd_equipamento",
+      "tipo": "Text",
+      "obrigatorio": false,
+      "descricao": "Código do equipamento solicitado no catálogo"
+    },
+    {
+      "id": "sd_estoque_status",
+      "tipo": "SingleSelect",
+      "obrigatorio": false,
+      "opcoes": ["DISPONIVEL", "INDISPONIVEL", "REQUER_APROVACAO"]
+    }
+  ]
+}

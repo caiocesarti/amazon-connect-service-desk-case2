@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="pt-BR" data-contraste="padrao">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="NuvemTech — Central Interna de Suporte de TI e Painel do Supervisor."
+    />
+    <meta name="theme-color" content="#09090b" />
+    <title>NuvemTech — Central de Suporte de TI</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo-principal">Pular para o conteúdo principal</a>
+
+    <!-- Navbar shadcn/ui -->
+    <header class="navbar" role="banner">
+      <div class="container navbar-inner">
+        <div class="marca">
+          <div class="marca-icone" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2L3 7V17L12 22L21 17V7L12 2Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="marca-titulo">
+            <strong>NuvemTech</strong>
+            <span class="separador-barra">/</span>
+            <span>Central de TI</span>
+          </div>
+          <span class="badge-status-online" id="status-api">
+            <span class="ponto-online"></span>
+            Online
+          </span>
+        </div>
+
+        <!-- Alternador de Persona: Colaborador vs. Supervisor -->
+        <div class="seletor-visao" role="tablist" aria-label="Alternar visão do sistema">
+          <button
+            type="button"
+            id="btn-visao-colaborador"
+            class="visao-tab ativo"
+            role="tab"
+            aria-selected="true"
+          >
+            Portal do Colaborador
+          </button>
+          <button
+            type="button"
+            id="btn-visao-supervisor"
+            class="visao-tab"
+            role="tab"
+            aria-selected="false"
+          >
+            Painel do Supervisor
+            <span class="contador-pilula" id="badge-chamados-tab">0</span>
+          </button>
+        </div>
+
+        <div class="navbar-acoes">
+          <button type="button" id="btn-novo-contato" class="btn-outline-sm">
+            Novo atendimento
+          </button>
+          <div class="divisor-vertical" aria-hidden="true"></div>
+          <div class="barra-acessibilidade" role="group" aria-label="Acessibilidade">
+            <button type="button" id="btn-diminuir-fonte" class="btn-ghost-icon" title="Diminuir fonte">A-</button>
+            <button type="button" id="btn-resetar-fonte" class="btn-ghost-icon" title="Fonte padrão">A</button>
+            <button type="button" id="btn-aumentar-fonte" class="btn-ghost-icon" title="Aumentar fonte">A+</button>
+            <button
+              type="button"
+              id="btn-alto-contraste"
+              class="btn-ghost-icon"
+              aria-pressed="false"
+              title="Alto contraste"
+            >
+              Contraste
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="conteudo-principal" class="container palco-principal">
+      <!-- =================================================================
+           VISÃO 1: PORTAL DO COLABORADOR (Foco 100% em Resolver & Acompanhar)
+           ================================================================= -->
+      <section id="secao-colaborador" class="visao-colaborador" aria-label="Portal do Colaborador">
+        <!-- Coluna Esquerda: Chat & Voz -->
+        <div class="card-shadcn coluna-chat">
+          <div class="chat-header">
+            <div class="agente-info">
+              <div class="avatar-shadcn">TI</div>
+              <div>
+                <h2>Assistente de Suporte de TI</h2>
+                <p>Tire dúvidas, redefina senhas ou abra um chamado rapidamente</p>
+              </div>
+            </div>
+
+            <div class="tabs-shadcn" role="tablist" aria-label="Canal de atendimento">
+              <button type="button" id="tab-modo-chat" class="tab-btn ativo" role="tab" aria-selected="true">
+                Chat
+              </button>
+              <button type="button" id="tab-modo-voz" class="tab-btn" role="tab" aria-selected="false">
+                Voz
+              </button>
+            </div>
+          </div>
+
+          <!-- Atalhos Rápidos (enviam apenas a solicitação inicial, usuário interage normalmente) -->
+          <div class="atalhos-servicos" aria-label="Temas frequentes">
+            <button type="button" class="chip-shadcn" data-prompt-inicial="Esqueci minha senha">
+              🔑 Esqueci minha senha
+            </button>
+            <button type="button" class="chip-shadcn" data-prompt-inicial="Estou sem internet">
+              🌐 Sem internet / VPN
+            </button>
+            <button type="button" class="chip-shadcn" data-prompt-inicial="Quero solicitar um headset">
+              💻 Solicitar equipamento
+            </button>
+            <button type="button" class="chip-shadcn" data-prompt-inicial="Consultar protocolo SD-20261115-4F9A2C">
+              📋 Consultar protocolo
+            </button>
+            <button type="button" class="chip-shadcn" data-prompt-inicial="Cliquei em um link suspeito de phishing">
+              🛡️ Reportar phishing
+            </button>
+            <button type="button" class="chip-shadcn" data-prompt-inicial="Quero falar com um atendente">
+              👤 Falar com analista
+            </button>
+          </div>
+
+          <!-- Área de Mensagens -->
+          <div class="chat-mensagens" id="console-mensagens" role="log" aria-live="polite"></div>
+
+          <!-- Barra de Voz -->
+          <div class="barra-voz oculto" id="visor-voz-webrtc">
+            <div class="ondas-audio" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <span class="voz-status" id="status-voz-texto">Resposta por voz ativa</span>
+            <button type="button" id="btn-ouvir-ultima" class="btn-outline-sm">Ouvir novamente</button>
+          </div>
+
+          <!-- Input fixo na base do card -->
+          <form id="form-console-chat" class="chat-input-area" autocomplete="off">
+            <label for="input-console-msg" class="sr-only">Mensagem</label>
+            <input
+              type="text"
+              id="input-console-msg"
+              class="input-shadcn"
+              placeholder="Escreva sua mensagem (ex.: Esqueci minha senha, matrícula NT1001)..."
+              required
+            />
+            <button type="submit" class="btn-primary-shadcn">Enviar</button>
+          </form>
+        </div>
+
+        <!-- Coluna Direita: Apenas "Meus Chamados" + Atendimento Flutuante -->
+        <aside class="coluna-meus-chamados">
+          <div class="card-shadcn painel-chamados-colab">
+            <div class="bloco-topo">
+              <div>
+                <h2>Minhas Solicitações</h2>
+                <p>Acompanhe seus protocolos e a equipe responsável</p>
+              </div>
+              <span class="badge-shadcn" id="contador-meus-chamados">0 abertos</span>
+            </div>
+
+            <div class="lista-chamados" id="lista-chamados-container" aria-live="polite"></div>
+          </div>
+
+          <div class="card-shadcn card-widget-externo">
+            <div>
+              <strong>Atendimento via Janela Flutuante</strong>
+              <p id="aviso-widget">Abra o widget oficial de chamadas e chat da central.</p>
+            </div>
+            <button type="button" id="btn-iniciar-atendimento" class="btn-outline-sm">
+              Abrir widget &nearr;
+            </button>
+          </div>
+        </aside>
+      </section>
+
+      <!-- =================================================================
+           VISÃO 2: PAINEL DO SUPERVISOR (FCR, TMA, Filas, Contact Lens)
+           ================================================================= -->
+      <section id="secao-supervisor" class="visao-supervisor oculto" aria-label="Painel do Supervisor">
+        <div class="barra-topo-supervisor">
+          <div>
+            <h2>Painel Operacional do Service Desk</h2>
+            <p>Indicadores em tempo real de resolução (FCR), tempo médio (TMA), filas e qualidade do atendimento.</p>
+          </div>
+          <div class="acoes-supervisor">
+            <span class="cronometro-badge" title="Duração do atendimento ativo">
+              Atendimento atual: <span id="cronometro">00:00.0</span>
+            </span>
+            <button type="button" id="btn-reiniciar" class="btn-outline-sm">
+              Redefinir turno
+            </button>
+            <!-- Mantido oculto caso scripts/testes referenciem -->
+            <button type="button" id="btn-rodar-todos" class="oculto" aria-hidden="true">Rodar</button>
+          </div>
+        </div>
+
+        <!-- 4 KPIs do Supervisor -->
+        <div class="grade-metricas">
+          <div class="card-shadcn card-metrica">
+            <div class="metrica-topo">
+              <span>Resolução no 1º Contato (FCR)</span>
+              <span class="badge-shadcn" id="kpi-fcr-tag">Meta &ge; 70%</span>
+            </div>
+            <strong class="metrica-valor" id="kpi-fcr-valor">—</strong>
+            <small class="metrica-sub" id="kpi-fcr-detalhe">Aguardando atendimentos</small>
+          </div>
+
+          <div class="card-shadcn card-metrica">
+            <div class="metrica-topo">
+              <span>Tempo Médio (TMA)</span>
+              <span class="badge-shadcn" id="kpi-tma-tag">Meta &le; 04m 00s</span>
+            </div>
+            <strong class="metrica-valor" id="kpi-tma-valor">—</strong>
+            <small class="metrica-sub" id="kpi-tma-detalhe">Tempo médio por sessão</small>
+          </div>
+
+          <div class="card-shadcn card-metrica">
+            <div class="metrica-topo">
+              <span>Análise de Sentimento</span>
+              <span class="badge-shadcn" id="kpi-sentimento-badge">Tempo real</span>
+            </div>
+            <strong class="metrica-valor" id="kpi-sentimento-valor">Neutro</strong>
+            <small class="metrica-sub">Percepção do colaborador</small>
+          </div>
+
+          <div class="card-shadcn card-metrica">
+            <div class="metrica-topo">
+              <span>Chamados Criados</span>
+              <span class="badge-shadcn" id="kpi-cases-prioridade">Hoje</span>
+            </div>
+            <strong class="metrica-valor" id="kpi-cases-total">0</strong>
+            <small class="metrica-sub">Categorização e prioridade automáticas</small>
+          </div>
+        </div>
+
+        <!-- Grid 2 Colunas do Supervisor: Equipes/Filas + Contact Lens/Etapas -->
+        <div class="grade-supervisor-inferior">
+          <div class="card-shadcn bloco-lateral">
+            <div class="bloco-topo">
+              <div>
+                <h3>Roteamento por Equipe Especializada</h3>
+                <p>Volume de atendimentos direcionados automaticamente por tema</p>
+              </div>
+            </div>
+            <div class="grade-equipes" id="grade-filas"></div>
+            <p class="status-encaminhamento" id="regra-roteamento">
+              Nenhum encaminhamento registrado ainda.
+            </p>
+          </div>
+
+          <div class="card-shadcn bloco-lateral">
+            <div class="bloco-topo">
+              <div>
+                <h3>Qualidade, Transcrição &amp; Sentimento</h3>
+                <p>Auditoria automática de turnos e etapas do atendimento</p>
+              </div>
+              <span class="badge-shadcn" id="lens-valor">Aguardando</span>
+            </div>
+
+            <div class="barra-progresso-sentimento">
+              <div class="barra-preenchimento" id="barra-sentimento-fill" style="width: 50%"></div>
+            </div>
+
+            <ul class="lens-transcricao" id="lens-transcricao"></ul>
+            <ul class="alertas-qualidade" id="lens-regras"></ul>
+            <ol class="etapas-compactas" id="lista-timeline"></ol>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="connect-widget-container" aria-live="polite"></div>
+
+    <footer class="rodape-clean" role="contentinfo">
+      <div class="container rodape-inner">
+        <span>&copy; NuvemTech S.A. &mdash; Central Interna de Suporte de TI</span>
+        <div class="rodape-direita">
+          <span id="status-finops-topo" class="sr-only">Ativo</span>
+          <span id="contador-finops" class="sr-only">0 / 5 sessões</span>
+          <button type="button" id="btn-resetar-cota" class="sr-only">Redefinir limite</button>
+          <span class="texto-suave-xs">Amazon Connect &bull; Atendimento 24x7</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/js/acessibilidade.js" defer></script>
+    <script src="assets/js/simulador.js" defer></script>
+    <script src="assets/js/widget-loader.js" defer></script>
+  </body>
+</html>

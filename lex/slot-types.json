@@ -1,0 +1,228 @@
+{
+  "versao": "1.0.0",
+  "localeId": "pt_BR",
+  "slotTypes": [
+    {
+      "slotTypeName": "TipoProblemaRedeType",
+      "description": "Subcategoria de incidente de conectividade de rede corporativa.",
+      "valueSelectionStrategy": "TOP_RESOLUTION",
+      "slotTypeValues": [
+        {
+          "sampleValue": { "value": "VPN" },
+          "synonyms": [
+            { "value": "vpn" },
+            { "value": "anyconnect" },
+            { "value": "túnel remoto" },
+            { "value": "acesso remoto" },
+            { "value": "vpn corporativa" },
+            { "value": "gateway vpn" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "WIFI" },
+          "synonyms": [
+            { "value": "wifi" },
+            { "value": "wi-fi" },
+            { "value": "rede sem fio" },
+            { "value": "wireless" },
+            { "value": "nuvemtech-corp" },
+            { "value": "sinal do wifi" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "SEM_INTERNET" },
+          "synonyms": [
+            { "value": "sem internet" },
+            { "value": "internet caiu" },
+            { "value": "não consigo acessar a internet" },
+            { "value": "sem conexão" },
+            { "value": "cabo de rede" },
+            { "value": "fora do ar" },
+            { "value": "rede caiu" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "DNS" },
+          "synonyms": [
+            { "value": "dns" },
+            { "value": "intranet não abre" },
+            { "value": "sistema interno não carrega" },
+            { "value": "erro de dns" }
+          ]
+        }
+      ]
+    },
+    {
+      "slotTypeName": "EscopoImpactoType",
+      "description": "Escopo de impacto do incidente para cálculo da matriz de prioridade ITIL.",
+      "valueSelectionStrategy": "TOP_RESOLUTION",
+      "slotTypeValues": [
+        {
+          "sampleValue": { "value": "INDIVIDUAL" },
+          "synonyms": [
+            { "value": "só eu" },
+            { "value": "apenas eu" },
+            { "value": "só na minha máquina" },
+            { "value": "meu computador" },
+            { "value": "individual" },
+            { "value": "só comigo" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "SETOR" },
+          "synonyms": [
+            { "value": "meu setor" },
+            { "value": "minha equipe" },
+            { "value": "todo o time" },
+            { "value": "andar inteiro" },
+            { "value": "sala de reunião" },
+            { "value": "sala de conselho" },
+            { "value": "várias pessoas" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "UNIDADE" },
+          "synonyms": [
+            { "value": "unidade inteira" },
+            { "value": "prédio inteiro" },
+            { "value": "filial toda" },
+            { "value": "escritório inteiro" },
+            { "value": "todo o prédio" }
+          ]
+        }
+      ]
+    },
+    {
+      "slotTypeName": "EquipamentoHardwareType",
+      "description": "Itens homologados do catálogo de equipamentos de TI da NuvemTech.",
+      "valueSelectionStrategy": "TOP_RESOLUTION",
+      "slotTypeValues": [
+        {
+          "sampleValue": { "value": "NOTEBOOK_PADRAO" },
+          "synonyms": [
+            { "value": "notebook" },
+            { "value": "laptop" },
+            { "value": "note" },
+            { "value": "notebook padrão" },
+            { "value": "computador portátil" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "NOTEBOOK_DEV" },
+          "synonyms": [
+            { "value": "notebook dev" },
+            { "value": "workstation" },
+            { "value": "notebook engenharia" },
+            { "value": "macbook" },
+            { "value": "note 32gb" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "MONITOR_24" },
+          "synonyms": [
+            { "value": "monitor" },
+            { "value": "monitor 24" },
+            { "value": "segunda tela" },
+            { "value": "tela externa" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "MONITOR_27" },
+          "synonyms": [
+            { "value": "monitor 27" },
+            { "value": "monitor 4k" },
+            { "value": "monitor grande" },
+            { "value": "tela 27" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "HEADSET_USB" },
+          "synonyms": [
+            { "value": "headset" },
+            { "value": "fone" },
+            { "value": "fone de ouvido" },
+            { "value": "fone com microfone" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "TECLADO_ABNT2" },
+          "synonyms": [
+            { "value": "teclado" },
+            { "value": "teclado sem fio" },
+            { "value": "teclado abnt2" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "MOUSE_ERGONOMICO" },
+          "synonyms": [
+            { "value": "mouse" },
+            { "value": "mouse sem fio" },
+            { "value": "mouse ergonômico" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "DOCKING_USBC" },
+          "synonyms": [
+            { "value": "docking" },
+            { "value": "docking station" },
+            { "value": "dock" },
+            { "value": "hub usbc" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "WEBCAM_FHD" },
+          "synonyms": [
+            { "value": "webcam" },
+            { "value": "câmera externa" },
+            { "value": "câmera de vídeo" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "CELULAR_CORPORATIVO" },
+          "synonyms": [
+            { "value": "celular" },
+            { "value": "celular corporativo" },
+            { "value": "smartphone" },
+            { "value": "aparelho celular" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "TOKEN_YUBIKEY" },
+          "synonyms": [
+            { "value": "token" },
+            { "value": "yubikey" },
+            { "value": "chave fido" },
+            { "value": "token mfa" }
+          ]
+        },
+        {
+          "sampleValue": { "value": "CARREGADOR_USBC" },
+          "synonyms": [
+            { "value": "carregador" },
+            { "value": "fonte" },
+            { "value": "fonte do notebook" },
+            { "value": "cabo de força" }
+          ]
+        }
+      ]
+    },
+    {
+      "slotTypeName": "MatriculaColaboradorType",
+      "description": "Matrícula corporativa NuvemTech no formato NT seguido de 4 dígitos.",
+      "valueSelectionStrategy": "REGEX_FILTER",
+      "regexFilter": { "pattern": "NT[0-9]{4}" }
+    },
+    {
+      "slotTypeName": "PinVerificacaoType",
+      "description": "PIN numérico de 4 dígitos para validação de identidade.",
+      "valueSelectionStrategy": "REGEX_FILTER",
+      "regexFilter": { "pattern": "[0-9]{4}" }
+    },
+    {
+      "slotTypeName": "ProtocoloChamadoType",
+      "description": "Protocolo determinístico do chamado no formato SD-AAAAMMDD-XXXXXX.",
+      "valueSelectionStrategy": "REGEX_FILTER",
+      "regexFilter": { "pattern": "SD-[0-9]{8}-[A-F0-9]{6}" }
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+name: CI/CD — Qualidade, Zero-Leak e Deploy Vercel
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cicd-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualidade:
+    name: Lint, Mypy, Zero-Leak, Validações e Pytest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependências de desenvolvimento
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint estático (Ruff)
+        run: ruff check .
+
+      - name: Checagem estática de tipos (Mypy)
+        run: mypy lambda/sd_fulfillment scripts api
+
+      - name: Auditoria DevSecOps Zero-Leak (árvore atual)
+        run: python scripts/verificar_segredos.py
+
+      - name: Validação do dataset JSON Schema e KB
+        run: python scripts/validar_dataset.py
+
+      - name: Validação dos Contact Flows (2019-10-30) e Lex V2
+        run: python scripts/validar_flows.py
+
+      - name: Build do pacote AWS Lambda e da Landing Page (FinOps)
+        env:
+          CONNECT_WIDGET_SNIPPET: ${{ secrets.CONNECT_WIDGET_SNIPPET }}
+          WIDGET_MAX_INTERACOES: "5"
+        run: |
+          python scripts/empacotar_lambda.py
+          python scripts/gerar_pacote_lex.py
+          python scripts/injetar_widget.py
+
+      - name: Suíte de testes unitários e cobertura (Pytest >= 90%)
+        run: pytest
+
+      - name: Publicar artefatos de build (Lambda ZIP, Lex ZIP e Landing Dist)
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuvemtech-service-desk-build
+          path: |
+            dist/sd_fulfillment.zip
+            dist/SD-ServiceDesk-Bot-LexImport.zip
+            landing/dist/
+          retention-days: 7
+
+  gitleaks:
+    name: Gitleaks (Auditoria de histórico Git)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

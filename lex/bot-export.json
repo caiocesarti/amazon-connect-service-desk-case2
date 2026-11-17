@@ -1,0 +1,316 @@
+{
+  "metadata": {
+    "schemaVersion": "1.0",
+    "ResourceType": "BOT",
+    "sanitized": true
+  },
+  "bot": {
+    "botName": "SD-ServiceDesk-Bot",
+    "description": "Bot omnichannel de triagem de TI da NuvemTech (Case 2 - Chat Web e Voz).",
+    "roleArn": "arn:aws:iam::000000000000:role/aws-service-role/lexv2.amazonaws.com/AWSServiceRoleForLexV2Bots_SDServiceDesk",
+    "dataPrivacy": { "childDirected": false },
+    "idleSessionTTLInSeconds": 300,
+    "botLocales": [
+      {
+        "localeId": "pt_BR",
+        "description": "Português do Brasil com voz neural Camila (Amazon Polly)",
+        "nluConfidenceThreshold": 0.4,
+        "voiceSettings": {
+          "voiceId": "Camila",
+          "engine": "neural"
+        },
+        "codeHookSpecification": {
+          "lambdaCodeHook": {
+            "lambdaARN": "arn:aws:lambda:<REGION>:000000000000:function:sd-fulfillment-servicedesk",
+            "codeHookInterfaceVersion": "1.0"
+          }
+        },
+        "intents": [
+          {
+            "intentName": "PasswordReset",
+            "description": "Redefinição ou desbloqueio de senha do Active Directory / SSO com validação de identidade.",
+            "dialogCodeHook": { "enabled": true },
+            "fulfillmentCodeHook": { "enabled": true },
+            "sampleUtterances": [
+              { "utterance": "esqueci minha senha" },
+              { "utterance": "preciso resetar minha senha" },
+              { "utterance": "minha senha expirou" },
+              { "utterance": "minha conta bloqueou no windows" },
+              { "utterance": "não consigo logar no computador" },
+              { "utterance": "bloqueou meu acesso no ad" },
+              { "utterance": "quero redefinir a senha da matrícula {Matricula}" },
+              { "utterance": "sou {NomeColaborador} e esqueci minha senha" },
+              { "utterance": "desbloquear minha conta corporativa" },
+              { "utterance": "trocar senha do sso" }
+            ],
+            "slots": [
+              {
+                "slotName": "Matricula",
+                "slotTypeName": "MatriculaColaboradorType",
+                "valueElicitationSetting": {
+                  "slotConstraint": "Required",
+                  "promptSpecification": {
+                    "maxRetries": 2,
+                    "messageGroups": [
+                      {
+                        "message": {
+                          "plainTextMessage": {
+                            "value": "Informe sua matrícula corporativa no formato NT seguido de 4 dígitos (ex.: NT1001)."
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "slotName": "PinVerificacao",
+                "slotTypeName": "PinVerificacaoType",
+                "valueElicitationSetting": {
+                  "slotConstraint": "Required",
+                  "promptSpecification": {
+                    "maxRetries": 2,
+                    "messageGroups": [
+                      {
+                        "message": {
+                          "plainTextMessage": {
+                            "value": "Informe seu PIN de verificação de 4 dígitos (nunca digite sua senha)."
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "slotName": "NomeColaborador",
+                "slotTypeName": "AMAZON.AlphaNumeric",
+                "valueElicitationSetting": { "slotConstraint": "Optional" }
+              }
+            ]
+          },
+          {
+            "intentName": "NetworkIssue",
+            "description": "Problemas de conectividade de rede, internet, Wi-Fi corporativo, DNS ou VPN.",
+            "dialogCodeHook": { "enabled": true },
+            "fulfillmentCodeHook": { "enabled": true },
+            "sampleUtterances": [
+              { "utterance": "não consigo acessar a internet" },
+              { "utterance": "estou sem internet" },
+              { "utterance": "a internet caiu aqui" },
+              { "utterance": "minha vpn não conecta" },
+              { "utterance": "o wifi corporativo não funciona" },
+              { "utterance": "estou com problema de {TipoProblemaRede}" },
+              { "utterance": "sem conexão na matrícula {Matricula}" },
+              { "utterance": "a rede caiu para {EscopoImpacto}" },
+              { "utterance": "não consigo abrir os sistemas internos pela vpn" },
+              { "utterance": "o prédio inteiro está sem internet" }
+            ],
+            "slots": [
+              {
+                "slotName": "Matricula",
+                "slotTypeName": "MatriculaColaboradorType",
+                "valueElicitationSetting": {
+                  "slotConstraint": "Required",
+                  "promptSpecification": {
+                    "maxRetries": 2,
+                    "messageGroups": [
+                      {
+                        "message": {
+                          "plainTextMessage": {
+                            "value": "Qual é a sua matrícula corporativa (ex.: NT1007)?"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "slotName": "TipoProblemaRede",
+                "slotTypeName": "TipoProblemaRedeType",
+                "valueElicitationSetting": {
+                  "slotConstraint": "Required",
+                  "promptSpecification": {
+                    "maxRetries": 2,
+                    "messageGroups": [
+                      {
+                        "message": {
+                          "plainTextMessage": {
+                            "value": "O problema ocorre na VPN, no Wi-Fi corporativo ou você está totalmente sem internet?"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "slotName": "EscopoImpacto",
+                "slotTypeName": "EscopoImpactoType",
+                "valueElicitationSetting": {
+                  "slotConstraint": "Required",
+                  "promptSpecification": {
+                    "maxRetries": 2,
+                    "messageGroups": [
+                      {
+                        "message": {
+                          "plainTextMessage": {
+                            "value": "A falha afeta apenas você, todo o seu setor ou a unidade inteira?"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "slotName": "NomeColaborador",
+                "slotTypeName": "AMAZON.AlphaNumeric",
+                "valueElicitationSetting": { "slotConstraint": "Optional" }
+              }
+            ]
+          },
+          {
+            "intentName": "HardwareRequest",
+            "description": "Solicitação ou substituição de equipamentos de TI com abertura automática no Connect Cases.",
+            "dialogCodeHook": { "enabled": true },
+            "fulfillmentCodeHook": { "enabled": true },
+            "sampleUtterances": [
+              { "utterance": "preciso de um equipamento novo" },
+              { "utterance": "quero solicitar um {Equipamento}" },
+              { "utterance": "preciso trocar meu {Equipamento}" },
+              { "utterance": "meu {Equipamento} quebrou" },
+              { "utterance": "solicitar {Equipamento} para a matrícula {Matricula}" },
+              { "utterance": "quero pedir um notebook novo" },
+              { "utterance": "preciso de um monitor externo" },
+              { "utterance": "meu headset parou de funcionar" },
+              { "utterance": "solicitar celular corporativo" },
+              { "utterance": "pedido de hardware" }
+            ],
+            "slots": [
+              {
+                "slotName": "Matricula",
+                "slotTypeName": "MatriculaColaboradorType",
+                "valueElicitationSetting": {
+                  "slotConstraint": "Required",
+                  "promptSpecification": {
+                    "maxRetries": 2,
+                    "messageGroups": [
+                      {
+                        "message": {
+                          "plainTextMessage": {
+                            "value": "Informe sua matrícula corporativa (ex.: NT1008) para vincular o pedido no Connect Cases."
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "slotName": "Equipamento",
+                "slotTypeName": "EquipamentoHardwareType",
+                "valueElicitationSetting": {
+                  "slotConstraint": "Required",
+                  "promptSpecification": {
+                    "maxRetries": 2,
+                    "messageGroups": [
+                      {
+                        "message": {
+                          "plainTextMessage": {
+                            "value": "Qual equipamento do catálogo você precisa (ex.: notebook, monitor, headset, teclado, mouse, celular corporativo)?"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "slotName": "NomeColaborador",
+                "slotTypeName": "AMAZON.AlphaNumeric",
+                "valueElicitationSetting": { "slotConstraint": "Optional" }
+              }
+            ]
+          },
+          {
+            "intentName": "ConsultarStatusChamado",
+            "description": "Consulta de andamento de chamado existente por protocolo ou matrícula.",
+            "dialogCodeHook": { "enabled": true },
+            "fulfillmentCodeHook": { "enabled": true },
+            "sampleUtterances": [
+              { "utterance": "qual o status do meu chamado" },
+              { "utterance": "consultar protocolo {Protocolo}" },
+              { "utterance": "como está o chamado {Protocolo}" },
+              { "utterance": "acompanhar meu pedido da matrícula {Matricula}" },
+              { "utterance": "quero saber o andamento do meu chamado" },
+              { "utterance": "verificar chamado aberto" }
+            ],
+            "slots": [
+              {
+                "slotName": "Protocolo",
+                "slotTypeName": "ProtocoloChamadoType",
+                "valueElicitationSetting": { "slotConstraint": "Optional" }
+              },
+              {
+                "slotName": "Matricula",
+                "slotTypeName": "MatriculaColaboradorType",
+                "valueElicitationSetting": { "slotConstraint": "Optional" }
+              }
+            ]
+          },
+          {
+            "intentName": "FalarComAtendente",
+            "description": "Solicitação explícita de transbordo para um analista humano N1.",
+            "dialogCodeHook": { "enabled": true },
+            "fulfillmentCodeHook": { "enabled": true },
+            "sampleUtterances": [
+              { "utterance": "quero falar com um atendente" },
+              { "utterance": "transferir para um analista" },
+              { "utterance": "falar com suporte humano" },
+              { "utterance": "me passa para um técnico" },
+              { "utterance": "atendente humano por favor" }
+            ],
+            "slots": [
+              {
+                "slotName": "Matricula",
+                "slotTypeName": "MatriculaColaboradorType",
+                "valueElicitationSetting": { "slotConstraint": "Optional" }
+              },
+              {
+                "slotName": "NomeColaborador",
+                "slotTypeName": "AMAZON.AlphaNumeric",
+                "valueElicitationSetting": { "slotConstraint": "Optional" }
+              }
+            ]
+          },
+          {
+            "intentName": "FallbackIntent",
+            "description": "Intenção padrão quando a confiança NLU fica abaixo de 0.40.",
+            "parentIntentSignature": "AMAZON.FallbackIntent",
+            "dialogCodeHook": { "enabled": true },
+            "fulfillmentCodeHook": { "enabled": true }
+          }
+        ]
+      }
+    ],
+    "botAliases": [
+      {
+        "botAliasName": "SD-Live",
+        "botVersion": "1",
+        "botAliasLocaleSettings": {
+          "pt_BR": {
+            "enabled": true,
+            "codeHookSpecification": {
+              "lambdaCodeHook": {
+                "lambdaARN": "arn:aws:lambda:<REGION>:000000000000:function:sd-fulfillment-servicedesk",
+                "codeHookInterfaceVersion": "1.0"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

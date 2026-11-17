@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  NuvemTech Service Desk (Estudo AWS) — Backend Lambda de fulfillment para Amazon Lex V2,
+  com política IAM de menor privilégio, retenção de logs FinOps (7 dias) e Zero-PII.
+
+Parameters:
+  CasesDryRun:
+    Type: String
+    Default: "true"
+    AllowedValues: ["true", "false"]
+    Description: "true executa em modo simulação sem chamadas à API Connect Cases."
+  ConnectCasesDomainId:
+    Type: String
+    Default: "dom-exemplo-servicedesk"
+    Description: "Identificador do domínio do Amazon Connect Cases (use placeholder em estudo)."
+  ConnectCasesTemplateId:
+    Type: String
+    Default: "tpl-exemplo-servicedesk"
+    Description: "Identificador do template de chamados no Amazon Connect Cases."
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 10
+    MemorySize: 256
+    Architectures:
+      - x86_64
+
+Resources:
+  ServiceDeskLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/sd-fulfillment-servicedesk
+      RetentionInDays: 7
+
+  ServiceDeskFulfillmentFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: ServiceDeskLogGroup
+    Properties:
+      FunctionName: sd-fulfillment-servicedesk
+      Description: "Fulfillment do bot Lex V2 (PasswordReset, NetworkIssue, HardwareRequest e guardrails)."
+      CodeUri: ../lambda/sd_fulfillment/
+      Handler: handler.lambda_handler
+      Environment:
+        Variables:
+          CASES_DRY_RUN:
+            Ref: CasesDryRun
+          CONNECT_CASES_DOMAIN_ID:
+            Ref: ConnectCasesDomainId
+          CONNECT_CASES_TEMPLATE_ID:
+            Ref: ConnectCasesTemplateId
+      Policies:
+        - Statement:
+            - Sid: ConnectCasesLeastPrivilege
+              Effect: Allow
+              Action:
+                - cases:CreateCase
+              Resource:
+                - Fn::Sub: "arn:${AWS::Partition}:cases:${AWS::Region}:${AWS::AccountId}:domain/${ConnectCasesDomainId}/*"
+
+  LexInvokeFulfillmentPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Ref: ServiceDeskFulfillmentFunction
+      Action: lambda:InvokeFunction
+      Principal: lexv2.amazonaws.com
+      SourceArn:
+        Fn::Sub: "arn:${AWS::Partition}:lex:${AWS::Region}:${AWS::AccountId}:bot-alias/*"
+
+Outputs:
+  FulfillmentFunctionArn:
+    Description: "ARN da Lambda de fulfillment para associação ao alias do Amazon Lex V2"
+    Value:
+      Fn::GetAtt:
+        - ServiceDeskFulfillmentFunction
+        - Arn

@@ -1,0 +1,68 @@
+# Especificação declarativa dos recursos do Amazon Connect (us-east-1)
+versao: "1.0.0"
+regiao: us-east-1
+instancia:
+  alias: "<INSTANCE_ALIAS>"
+  id: "<INSTANCE_ID>"
+  arn: "arn:aws:connect:us-east-1:000000000000:instance/<INSTANCE_ID>"
+
+horario_operacao:
+  nome: SD-Horario-Comercial
+  fuso_horario: America/Sao_Paulo
+  dias: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY]
+  inicio: "08:00"
+  fim: "18:00"
+
+filas:
+  - chave_logica: SEGURANCA
+    nome: SD-Fila-Seguranca
+    descricao: "Redefinição de senha AD/SSO, desbloqueio de conta e validação de identidade."
+    horario: SD-Horario-Comercial
+  - chave_logica: REDES
+    nome: SD-Fila-Redes
+    descricao: "Incidentes de VPN, Wi-Fi corporativo, DNS e conectividade de escritório."
+    horario: SD-Horario-Comercial
+  - chave_logica: HARDWARE
+    nome: SD-Fila-Hardware
+    descricao: "Solicitação, substituição e logística de equipamentos de TI (Connect Cases)."
+    horario: SD-Horario-Comercial
+  - chave_logica: GERAL_N1
+    nome: SD-Fila-Geral-N1
+    descricao: "Atendimento geral N1, dúvidas e solicitações de transbordo humano."
+    horario: SD-Horario-Comercial
+  - chave_logica: PRIORITARIA_P1
+    nome: SD-Fila-Prioritaria-P1
+    descricao: "Resposta imediata a incidentes críticos de segurança (CSIRT), quedas de unidade e VIP."
+    horario: SD-Horario-Comercial
+
+routing_profiles:
+  - nome: SD-RP-Analista-N1
+    canais:
+      VOICE: 1
+      CHAT: 3
+    filas_associadas:
+      - fila: SD-Fila-Prioritaria-P1
+        prioridade: 1
+        atraso_segundos: 0
+      - fila: SD-Fila-Seguranca
+        prioridade: 2
+        atraso_segundos: 0
+      - fila: SD-Fila-Redes
+        prioridade: 2
+        atraso_segundos: 0
+      - fila: SD-Fila-Hardware
+        prioridade: 3
+        atraso_segundos: 0
+      - fila: SD-Fila-Geral-N1
+        prioridade: 4
+        atraso_segundos: 0
+
+metricas_supervisor:
+  - sigla: TMA
+    nome_connect: "Average Handle Time (AHT)"
+    meta_chat_segundos: 240
+    meta_voz_segundos: 180
+  - sigla: FCR
+    nome_connect: "First Contact Resolution / Bot Containment"
+    rastreamento: "Atributo sd_resolvido_bot=true + casos encerrados no primeiro contato sem reabertura em 24h"
+    meta_percentual: 70

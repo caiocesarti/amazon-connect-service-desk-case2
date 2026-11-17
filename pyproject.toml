@@ -1,0 +1,57 @@
+[project]
+name = "nuvemtech-service-desk"
+version = "0.1.0"
+description = "Service Desk de TI omnichannel no Amazon Connect (Lex V2, Lambda, Q in Connect, Cases, Contact Lens)."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["pyyaml>=6.0"]
+license = { text = "MIT" }
+authors = [{ name = "Caio Cesar" }]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=5.0",
+    "jsonschema>=4.23",
+    "ruff>=0.8",
+    "pre-commit>=4.0",
+    "mypy>=1.13",
+    "types-PyYAML>=6.0",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = [".", "scripts", "lambda/sd_fulfillment"]
+addopts = "-ra --strict-markers --cov=api --cov=scripts --cov=lambda/sd_fulfillment --cov-report=term-missing --cov-fail-under=90"
+
+[tool.coverage.run]
+branch = true
+omit = ["tests/*"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["api", "scripts", "lambda/sd_fulfillment"]
+extend-exclude = ["dist", "landing/dist"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "PL"]
+ignore = [
+    "S101",    # assert é o idioma do pytest
+    "S603",    # subprocess com lista de argumentos controlada
+    "S607",    # 'git' resolvido pelo PATH é intencional
+    "PLR2004", # números mágicos em testes
+    "PLR0913", # too many arguments
+    "PLR0917", # too many positional arguments
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S105", "S106"]

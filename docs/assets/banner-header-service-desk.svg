@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 340" width="100%" height="auto" role="img" aria-labelledby="banner-title banner-desc">
+  <title id="banner-title">NuvemTech — Service Desk Omnichannel no Amazon Connect</title>
+  <desc id="banner-desc">Banner moderno representando uma central de atendimento Cloud Call Center omnichannel com voz WebRTC, chat web, Amazon Lex V2, Connect Cases e métricas de supervisão em tempo real.</desc>
+
+  <defs>
+    <linearGradient id="heroBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09090B" />
+      <stop offset="55%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+
+    <radialGradient id="glowIndigo" cx="72%" cy="45%" r="48%">
+      <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.32" />
+      <stop offset="60%" stop-color="#4F46E5" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="glowCyan" cx="22%" cy="85%" r="45%">
+      <stop offset="0%" stop-color="#06B6D4" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="50%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+
+    <linearGradient id="cardGlass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.78" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.90" />
+    </linearGradient>
+
+    <linearGradient id="headsetGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+
+    <pattern id="techGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#334155" fill-opacity="0.38" />
+    </pattern>
+
+    <filter id="softShadow" x="-15%" y="-15%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.55" />
+    </filter>
+  </defs>
+
+  <!-- Base background -->
+  <rect width="1280" height="340" rx="16" fill="url(#heroBg)" />
+  <rect width="1280" height="340" rx="16" fill="url(#techGrid)" />
+  <rect width="1280" height="340" rx="16" fill="url(#glowIndigo)" />
+  <rect width="1280" height="340" rx="16" fill="url(#glowCyan)" />
+  <rect x="0.75" y="0.75" width="1278.5" height="338.5" rx="15.5" fill="none" stroke="#1E293B" stroke-width="1.5" />
+
+  <!-- Top accent line -->
+  <rect x="48" y="0" width="260" height="3" rx="1.5" fill="url(#accentGrad)" />
+
+  <!-- ================= LEFT HERO SECTION ================= -->
+  <g transform="translate(56, 52)">
+    <!-- Status / Brand Pill -->
+    <rect x="0" y="0" width="380" height="30" rx="15" fill="#111827" stroke="#27272A" stroke-width="1" />
+    <circle cx="18" cy="15" r="5" fill="#10B981" />
+    <circle cx="18" cy="15" r="9" fill="#10B981" fill-opacity="0.22" />
+    <text x="34" y="19" fill="#E2E8F0" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" letter-spacing="0.8">
+      PROJETO DE ESTUDO • AMAZON CONNECT CLOUD
+    </text>
+
+    <!-- Main Heading -->
+    <text x="0" y="84" fill="#FFFFFF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-0.8">
+      Service Desk Omnichannel
+    </text>
+    <text x="0" y="122" fill="#94A3B8" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16.5" font-weight="400">
+      Central de TI Inteligente na AWS • Voz Neural, Chat Web &amp; Roteamento N1
+    </text>
+
+    <!-- Accent divider -->
+    <rect x="0" y="144" width="96" height="3.5" rx="1.75" fill="url(#accentGrad)" />
+
+    <!-- Feature / Stack Pills -->
+    <g transform="translate(0, 174)">
+      <rect x="0" y="0" width="136" height="32" rx="8" fill="#1E1B4B" stroke="#4F46E5" stroke-opacity="0.6" stroke-width="1" />
+      <text x="68" y="20" text-anchor="middle" fill="#C7D2FE" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" font-weight="600">
+        Lex V2 • Polly Camila
+      </text>
+
+      <rect x="148" y="0" width="132" height="32" rx="8" fill="#083344" stroke="#06B6D4" stroke-opacity="0.55" stroke-width="1" />
+      <text x="214" y="20" text-anchor="middle" fill="#A5F3FC" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" font-weight="600">
+        WebRTC Voz &amp; Chat
+      </text>
+
+      <rect x="292" y="0" width="144" height="32" rx="8" fill="#064E3B" stroke="#10B981" stroke-opacity="0.55" stroke-width="1" />
+      <text x="364" y="20" text-anchor="middle" fill="#A7F3D0" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" font-weight="600">
+        Cases &amp; Contact Lens
+      </text>
+
+      <rect x="448" y="0" width="132" height="32" rx="8" fill="#18181B" stroke="#3F3F46" stroke-width="1" />
+      <text x="514" y="20" text-anchor="middle" fill="#D4D4D8" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" font-weight="600">
+        Zero-Leak DevSecOps
+      </text>
+    </g>
+
+    <!-- Bottom architecture subtle caption -->
+    <text x="0" y="238" fill="#64748B" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="12">
+      Portal Vercel + Python Lambda + Amazon Q in Connect + Real-Time CCP
+    </text>
+  </g>
+
+  <!-- ================= RIGHT CALL CENTER VISUALIZATION ================= -->
+  <g transform="translate(700, 32)">
+    <!-- Connection lines (telemetry arcs) -->
+    <path d="M 155 138 C 210 138, 215 74, 265 74" fill="none" stroke="#4F46E5" stroke-width="1.8" stroke-dasharray="5 4" stroke-opacity="0.7" />
+    <path d="M 155 148 C 215 148, 220 206, 265 206" fill="none" stroke="#10B981" stroke-width="1.8" stroke-dasharray="5 4" stroke-opacity="0.7" />
+    <circle cx="265" cy="74" r="3.5" fill="#6366F1" />
+    <circle cx="265" cy="206" r="3.5" fill="#10B981" />
+
+    <!-- Central Call Center Headset Hub -->
+    <g transform="translate(22, 54)" filter="url(#softShadow)">
+      <circle cx="88" cy="88" r="82" fill="#0F172A" fill-opacity="0.82" stroke="#1E293B" stroke-width="1.5" />
+      <circle cx="88" cy="88" r="66" fill="#1E1B4B" fill-opacity="0.35" stroke="url(#headsetGrad)" stroke-width="1.5" stroke-opacity="0.65" />
+
+      <!-- Vector Headset Icon -->
+      <path d="M 56 92 L 56 80 C 56 60, 70 46, 88 46 C 106 46, 120 60, 120 80 L 120 92" fill="none" stroke="url(#headsetGrad)" stroke-width="5.5" stroke-linecap="round" />
+      <!-- Left earcup -->
+      <rect x="47" y="82" width="14" height="28" rx="6" fill="#6366F1" />
+      <!-- Right earcup -->
+      <rect x="115" y="82" width="14" height="28" rx="6" fill="#06B6D4" />
+      <!-- Mic boom -->
+      <path d="M 122 108 C 122 122, 108 126, 94 126" fill="none" stroke="#38BDF8" stroke-width="3.5" stroke-linecap="round" />
+      <rect x="82" y="122" width="14" height="7" rx="3.5" fill="#10B981" />
+
+      <!-- Live voice waveform inside hub -->
+      <g transform="translate(69, 76)">
+        <rect x="0" y="10" width="4" height="14" rx="2" fill="#818CF8" />
+        <rect x="8" y="4" width="4" height="26" rx="2" fill="#38BDF8" />
+        <rect x="16" y="0" width="4" height="34" rx="2" fill="#10B981" />
+        <rect x="24" y="6" width="4" height="22" rx="2" fill="#38BDF8" />
+        <rect x="32" y="11" width="4" height="12" rx="2" fill="#818CF8" />
+      </g>
+    </g>
+
+    <!-- Floating Card 1: Live Omnichannel Routing & Protocol -->
+    <g transform="translate(265, 18)" filter="url(#softShadow)">
+      <rect x="0" y="0" width="265" height="114" rx="12" fill="url(#cardGlass)" stroke="#334155" stroke-width="1" />
+      <circle cx="18" cy="20" r="4" fill="#6366F1" />
+      <text x="30" y="24" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700">
+        ATENDIMENTO INTELIGENTE • CCP
+      </text>
+      <rect x="200" y="11" width="52" height="18" rx="9" fill="#064E3B" />
+      <text x="226" y="23.5" text-anchor="middle" fill="#34D399" font-family="system-ui, sans-serif" font-size="9.5" font-weight="700">
+        ONLINE
+      </text>
+
+      <!-- Simulated chat lines -->
+      <rect x="14" y="39" width="237" height="28" rx="6" fill="#09090B" fill-opacity="0.7" stroke="#1E293B" stroke-width="1" />
+      <text x="24" y="57" fill="#CBD5E1" font-family="system-ui, sans-serif" font-size="11">
+        ✓ Protocolo <tspan fill="#818CF8" font-weight="700">SD-20261117</tspan> criado (P3)
+      </text>
+
+      <!-- Queue chips -->
+      <g transform="translate(14, 78)">
+        <rect x="0" y="0" width="76" height="22" rx="6" fill="#1E1B4B" stroke="#4F46E5" stroke-opacity="0.5" stroke-width="1" />
+        <text x="38" y="14.5" text-anchor="middle" fill="#C7D2FE" font-family="system-ui, sans-serif" font-size="10" font-weight="600">
+          Segurança
+        </text>
+        <rect x="82" y="0" width="60" height="22" rx="6" fill="#083344" stroke="#06B6D4" stroke-opacity="0.5" stroke-width="1" />
+        <text x="112" y="14.5" text-anchor="middle" fill="#A5F3FC" font-family="system-ui, sans-serif" font-size="10" font-weight="600">
+          Redes
+        </text>
+        <rect x="148" y="0" width="89" height="22" rx="6" fill="#3B0764" stroke="#A855F7" stroke-opacity="0.5" stroke-width="1" />
+        <text x="192.5" y="14.5" text-anchor="middle" fill="#E9D5FF" font-family="system-ui, sans-serif" font-size="10" font-weight="600">
+          Hardware • P1
+        </text>
+      </g>
+    </g>
+
+    <!-- Floating Card 2: Real-time Supervisor KPIs -->
+    <g transform="translate(265, 150)" filter="url(#softShadow)">
+      <rect x="0" y="0" width="265" height="108" rx="12" fill="url(#cardGlass)" stroke="#334155" stroke-width="1" />
+      <circle cx="18" cy="20" r="4" fill="#10B981" />
+      <text x="30" y="24" fill="#E2E8F0" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700">
+        PAINEL DO SUPERVISOR • TEMPO REAL
+      </text>
+
+      <!-- Metric 1: FCR -->
+      <rect x="14" y="38" width="113" height="54" rx="8" fill="#09090B" fill-opacity="0.72" stroke="#1E293B" stroke-width="1" />
+      <text x="24" y="55" fill="#94A3B8" font-family="system-ui, sans-serif" font-size="10">FCR (1º Contato)</text>
+      <text x="24" y="79" fill="#34D399" font-family="system-ui, sans-serif" font-size="20" font-weight="800">75.0%</text>
+
+      <!-- Metric 2: TMA -->
+      <rect x="137" y="38" width="114" height="54" rx="8" fill="#09090B" fill-opacity="0.72" stroke="#1E293B" stroke-width="1" />
+      <text x="147" y="55" fill="#94A3B8" font-family="system-ui, sans-serif" font-size="10">TMA Médio (AHT)</text>
+      <text x="147" y="79" fill="#38BDF8" font-family="system-ui, sans-serif" font-size="20" font-weight="800">01m 48s</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,62 @@
+{
+  "versao": "1.0.0",
+  "idiomaTranscriao": "pt-BR",
+  "canaisHabilitados": ["VOICE", "CHAT"],
+  "redacaoDadosSensiveis": {
+    "habilitado": true,
+    "entidades": ["PII", "NAME", "EMAIL", "PHONE", "PIN", "PASSWORD"]
+  },
+  "regras": [
+    {
+      "nome": "SD-Regra-Sentimento-Negativo",
+      "gatilho": "PostContactSummaryAndRealTime",
+      "condicao": {
+        "sentimentoCliente": "NEGATIVE",
+        "scoreMaximo": -2.0
+      },
+      "acoes": [
+        {
+          "tipo": "AssignContactCategory",
+          "categoria": "SENTIMENTO_CRITICO_COLABORADOR"
+        },
+        {
+          "tipo": "CreateEventBridgeEvent",
+          "detalhe": "Alerta para supervisor do Service Desk revisar atendimento com sentimento negativo."
+        }
+      ]
+    },
+    {
+      "nome": "SD-Regra-Incidente-Seguranca-P1",
+      "gatilho": "RealTimeTranscript",
+      "palavrasChave": [
+        "ransomware",
+        "arquivos criptografados",
+        "phishing",
+        "link suspeito",
+        "vazamento de dados"
+      ],
+      "acoes": [
+        {
+          "tipo": "AssignContactCategory",
+          "categoria": "EMERGENCIA_SEGURANCA_P1"
+        }
+      ]
+    },
+    {
+      "nome": "SD-Regra-Resolucao-Primeiro-Contato-FCR",
+      "gatilho": "PostContact",
+      "palavrasChave": [
+        "resolvido",
+        "funcionou perfeitamente",
+        "acesso restabelecido",
+        "chamado concluído"
+      ],
+      "acoes": [
+        {
+          "tipo": "AssignContactCategory",
+          "categoria": "FCR_CONFIRMADO"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "bloco-sussurro-resumo-analista",
+  "Metadata": {
+    "entryPointPosition": {
+      "x": 40,
+      "y": 220
+    },
+    "snapToGrid": true,
+    "ActionMetadata": {
+      "bloco-sussurro-resumo-analista": {
+        "position": {
+          "x": 260,
+          "y": 120
+        }
+      },
+      "bloco-encerrar-sussurro": {
+        "position": {
+          "x": 580,
+          "y": 120
+        }
+      }
+    },
+    "flowName": "SD-Sussurro-Agente",
+    "flowDescription": "Agent whisper flow que anuncia prioridade, fila, protocolo e resumo do colaborador para o analista no CCP v2."
+  },
+  "Actions": [
+    {
+      "Identifier": "bloco-sussurro-resumo-analista",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Novo atendimento Service Desk. Prioridade $.Attributes.sd_prioridade, fila $.Attributes.sd_fila_destino, protocolo $.Attributes.sd_protocolo. Resumo: $.Attributes.sd_resumo"
+      },
+      "Transitions": {
+        "NextAction": "bloco-encerrar-sussurro",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-encerrar-sussurro"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-encerrar-sussurro",
+      "Type": "EndFlowExecution",
+      "Parameters": {},
+      "Transitions": {}
+    }
+  ]
+}

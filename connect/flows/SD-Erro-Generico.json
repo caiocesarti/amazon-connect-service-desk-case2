@@ -1,0 +1,75 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "bloco-registrar-motivo-erro",
+  "Metadata": {
+    "entryPointPosition": {
+      "x": 40,
+      "y": 220
+    },
+    "snapToGrid": true,
+    "ActionMetadata": {
+      "bloco-registrar-motivo-erro": {
+        "position": {
+          "x": 260,
+          "y": 120
+        }
+      },
+      "bloco-mensagem-contingencia": {
+        "position": {
+          "x": 560,
+          "y": 120
+        }
+      },
+      "bloco-desconectar-seguro": {
+        "position": {
+          "x": 860,
+          "y": 120
+        }
+      }
+    },
+    "flowName": "SD-Erro-Generico",
+    "flowDescription": "Fluxo de contingência amigável para falhas técnicas inesperadas antes do encerramento seguro."
+  },
+  "Actions": [
+    {
+      "Identifier": "bloco-registrar-motivo-erro",
+      "Type": "UpdateContactAttributes",
+      "Parameters": {
+        "Attributes": {
+          "sd_motivo_transbordo": "ERRO_TECNICO"
+        }
+      },
+      "Transitions": {
+        "NextAction": "bloco-mensagem-contingencia",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-mensagem-contingencia"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-mensagem-contingencia",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Pedimos desculpas: encontramos uma instabilidade momentânea no atendimento automático da Central de TI. Caso já tenha um protocolo ($.Attributes.sd_protocolo), ele permanece salvo. Por favor, tente novamente em alguns instantes ou acione o ramal interno de plantão."
+      },
+      "Transitions": {
+        "NextAction": "bloco-desconectar-seguro",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-desconectar-seguro"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-desconectar-seguro",
+      "Type": "DisconnectParticipant",
+      "Parameters": {},
+      "Transitions": {}
+    }
+  ]
+}

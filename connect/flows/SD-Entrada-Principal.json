@@ -1,0 +1,446 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "bloco-logging-enabled",
+  "Metadata": {
+    "entryPointPosition": {
+      "x": 40,
+      "y": 220
+    },
+    "snapToGrid": true,
+    "ActionMetadata": {
+      "bloco-logging-enabled": {
+        "position": {
+          "x": 220,
+          "y": 220
+        }
+      },
+      "bloco-voz-camila-neural": {
+        "position": {
+          "x": 480,
+          "y": 220
+        }
+      },
+      "bloco-idioma-ptbr": {
+        "position": {
+          "x": 740,
+          "y": 220
+        }
+      },
+      "bloco-init-q-in-connect": {
+        "position": {
+          "x": 1000,
+          "y": 220
+        }
+      },
+      "bloco-atributos-q-ativo": {
+        "position": {
+          "x": 1280,
+          "y": 100
+        }
+      },
+      "bloco-atributos-q-contingencia": {
+        "position": {
+          "x": 1280,
+          "y": 360
+        }
+      },
+      "bloco-boas-vindas": {
+        "position": {
+          "x": 1560,
+          "y": 220
+        }
+      },
+      "bloco-lex-servicedesk": {
+        "position": {
+          "x": 1840,
+          "y": 220
+        }
+      },
+      "bloco-copiar-atributos-lex": {
+        "position": {
+          "x": 2160,
+          "y": 220
+        }
+      },
+      "bloco-decidir-proxima-acao": {
+        "position": {
+          "x": 2460,
+          "y": 220
+        }
+      },
+      "bloco-despedida-autoatendimento": {
+        "position": {
+          "x": 2780,
+          "y": 80
+        }
+      },
+      "bloco-transferir-transbordo-n1": {
+        "position": {
+          "x": 2780,
+          "y": 280
+        }
+      },
+      "bloco-transferir-erro-generico": {
+        "position": {
+          "x": 2780,
+          "y": 480
+        }
+      },
+      "bloco-encerrar-contato": {
+        "position": {
+          "x": 3100,
+          "y": 220
+        }
+      }
+    },
+    "flowName": "SD-Entrada-Principal",
+    "flowDescription": "Fluxo principal omnichannel (Chat + Voz) do NuvemTech Service Desk com Amazon Q in Connect e Lex V2 pt_BR."
+  },
+  "Actions": [
+    {
+      "Identifier": "bloco-logging-enabled",
+      "Type": "UpdateFlowLoggingBehavior",
+      "Parameters": {
+        "FlowLoggingBehavior": "Enabled"
+      },
+      "Transitions": {
+        "NextAction": "bloco-voz-camila-neural"
+      }
+    },
+    {
+      "Identifier": "bloco-voz-camila-neural",
+      "Type": "UpdateContactTextToSpeechVoice",
+      "Parameters": {
+        "TextToSpeechVoice": "Camila",
+        "TextToSpeechEngine": "Neural",
+        "TextToSpeechStyle": "None"
+      },
+      "Transitions": {
+        "NextAction": "bloco-idioma-ptbr",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-idioma-ptbr"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-idioma-ptbr",
+      "Type": "UpdateContactData",
+      "Parameters": {
+        "LanguageCode": "pt-BR"
+      },
+      "Transitions": {
+        "NextAction": "bloco-init-q-in-connect",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-init-q-in-connect"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-init-q-in-connect",
+      "Type": "CreateWisdomSession",
+      "Parameters": {
+        "WisdomAssistantArn": "arn:aws:wisdom:<REGION>:000000000000:assistant/<Q_ASSISTANT_ID>"
+      },
+      "Transitions": {
+        "NextAction": "bloco-atributos-q-ativo",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-atributos-q-contingencia"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-atributos-q-ativo",
+      "Type": "UpdateContactAttributes",
+      "Parameters": {
+        "Attributes": {
+          "sd_versao_fluxo": "v1.0.0",
+          "sd_canal": "$.Channel",
+          "sd_idioma": "pt-BR",
+          "sd_q_status": "ATIVO",
+          "sd_fila_destino": "GERAL_N1",
+          "sd_prioridade": "P3",
+          "sd_resolvido_bot": "false"
+        }
+      },
+      "Transitions": {
+        "NextAction": "bloco-boas-vindas",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-boas-vindas"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-atributos-q-contingencia",
+      "Type": "UpdateContactAttributes",
+      "Parameters": {
+        "Attributes": {
+          "sd_versao_fluxo": "v1.0.0",
+          "sd_canal": "$.Channel",
+          "sd_idioma": "pt-BR",
+          "sd_q_status": "INDISPONIVEL",
+          "sd_fila_destino": "GERAL_N1",
+          "sd_prioridade": "P3",
+          "sd_resolvido_bot": "false"
+        }
+      },
+      "Transitions": {
+        "NextAction": "bloco-boas-vindas",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-boas-vindas"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-boas-vindas",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Olá! Você está na Central de TI da NuvemTech. Posso ajudar com redefinição de senha, problemas de rede/VPN, solicitação de equipamentos ou consulta de chamados."
+      },
+      "Transitions": {
+        "NextAction": "bloco-lex-servicedesk",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-transferir-erro-generico"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-lex-servicedesk",
+      "Type": "ConnectParticipantWithLexBot",
+      "Parameters": {
+        "Text": "Em uma frase, conte como posso ajudar você hoje (ex.: esqueci minha senha, estou sem internet ou preciso de um headset).",
+        "LexV2Bot": {
+          "AliasArn": "arn:aws:lex:<REGION>:000000000000:bot-alias/<LEX_BOT_ID>/<LEX_BOT_ALIAS_ID>"
+        },
+        "LexSessionAttributes": {
+          "sd_versao_fluxo": "$.Attributes.sd_versao_fluxo",
+          "sd_canal": "$.Attributes.sd_canal",
+          "sd_idioma": "$.Attributes.sd_idioma",
+          "sd_q_status": "$.Attributes.sd_q_status"
+        }
+      },
+      "Transitions": {
+        "NextAction": "bloco-copiar-atributos-lex",
+        "Conditions": [
+          {
+            "NextAction": "bloco-copiar-atributos-lex",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "PasswordReset"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-copiar-atributos-lex",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "NetworkIssue"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-copiar-atributos-lex",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "HardwareRequest"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-copiar-atributos-lex",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "ConsultarStatusChamado"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-copiar-atributos-lex",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "FalarComAtendente"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-copiar-atributos-lex",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "FallbackIntent"
+              ]
+            }
+          }
+        ],
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingCondition",
+            "NextAction": "bloco-copiar-atributos-lex"
+          },
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-transferir-erro-generico"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-copiar-atributos-lex",
+      "Type": "UpdateContactAttributes",
+      "Parameters": {
+        "Attributes": {
+          "sd_intencao": "$.Lex.SessionAttributes.sd_intencao",
+          "sd_categoria": "$.Lex.SessionAttributes.sd_categoria",
+          "sd_subcategoria": "$.Lex.SessionAttributes.sd_subcategoria",
+          "sd_impacto": "$.Lex.SessionAttributes.sd_impacto",
+          "sd_prioridade": "$.Lex.SessionAttributes.sd_prioridade",
+          "sd_matricula": "$.Lex.SessionAttributes.sd_matricula",
+          "sd_colaborador_nome": "$.Lex.SessionAttributes.sd_colaborador_nome",
+          "sd_unidade": "$.Lex.SessionAttributes.sd_unidade",
+          "sd_identidade_validada": "$.Lex.SessionAttributes.sd_identidade_validada",
+          "sd_protocolo": "$.Lex.SessionAttributes.sd_protocolo",
+          "sd_caso_id": "$.Lex.SessionAttributes.sd_caso_id",
+          "sd_equipamento": "$.Lex.SessionAttributes.sd_equipamento",
+          "sd_estoque_status": "$.Lex.SessionAttributes.sd_estoque_status",
+          "sd_incidente_vinculado": "$.Lex.SessionAttributes.sd_incidente_vinculado",
+          "sd_proxima_acao": "$.Lex.SessionAttributes.sd_proxima_acao",
+          "sd_fila_destino": "$.Lex.SessionAttributes.sd_fila_destino",
+          "sd_motivo_transbordo": "$.Lex.SessionAttributes.sd_motivo_transbordo",
+          "sd_guardrail_acionado": "$.Lex.SessionAttributes.sd_guardrail_acionado",
+          "sd_resolvido_bot": "$.Lex.SessionAttributes.sd_resolvido_bot",
+          "sd_resumo": "$.Lex.SessionAttributes.sd_resumo"
+        }
+      },
+      "Transitions": {
+        "NextAction": "bloco-decidir-proxima-acao",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-transferir-transbordo-n1"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-decidir-proxima-acao",
+      "Type": "Compare",
+      "Parameters": {
+        "ComparisonValue": "$.Attributes.sd_proxima_acao"
+      },
+      "Transitions": {
+        "NextAction": "bloco-transferir-transbordo-n1",
+        "Conditions": [
+          {
+            "NextAction": "bloco-despedida-autoatendimento",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "ENCERRAR"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-despedida-autoatendimento",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "CRIAR_CASO"
+              ]
+            }
+          },
+          {
+            "NextAction": "bloco-transferir-transbordo-n1",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "TRANSBORDO"
+              ]
+            }
+          }
+        ],
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingCondition",
+            "NextAction": "bloco-transferir-transbordo-n1"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-despedida-autoatendimento",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Atendimento concluído pela Central de TI da NuvemTech. Sempre que precisar, estamos à disposição!"
+      },
+      "Transitions": {
+        "NextAction": "bloco-encerrar-contato",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-encerrar-contato"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-transferir-transbordo-n1",
+      "Type": "TransferToFlow",
+      "Parameters": {
+        "ContactFlowId": "arn:aws:connect:<REGION>:000000000000:instance/<INSTANCE_ID>/contact-flow/<FLOW_ID_TRANSBORDO_N1>"
+      },
+      "Transitions": {
+        "NextAction": "bloco-transferir-erro-generico",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-transferir-erro-generico"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-transferir-erro-generico",
+      "Type": "TransferToFlow",
+      "Parameters": {
+        "ContactFlowId": "arn:aws:connect:<REGION>:000000000000:instance/<INSTANCE_ID>/contact-flow/<FLOW_ID_ERRO_GENERICO>"
+      },
+      "Transitions": {
+        "NextAction": "bloco-encerrar-contato",
+        "Errors": [
+          {
+            "ErrorType": "NoMatchingError",
+            "NextAction": "bloco-encerrar-contato"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "bloco-encerrar-contato",
+      "Type": "DisconnectParticipant",
+      "Parameters": {},
+      "Transitions": {}
+    }
+  ]
+}
