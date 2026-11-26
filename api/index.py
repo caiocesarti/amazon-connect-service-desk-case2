@@ -31,8 +31,9 @@ class handler(BaseHTTPRequestHandler):  # noqa: N801
 
     def _servir_estatico(self, rota: str) -> bool:
         relativo = "index.html" if rota in {"/", "/index.html", ""} else rota.lstrip("/")
+        raiz_dist = PASTA_DIST.resolve()
         alvo = (PASTA_DIST / relativo).resolve()
-        if not str(alvo).startswith(str(PASTA_DIST.resolve())) or not alvo.is_file():
+        if not alvo.is_relative_to(raiz_dist) or not alvo.is_file():
             return False
         tipo, _ = mimetypes.guess_type(str(alvo))
         if alvo.suffix == ".js":
@@ -63,7 +64,11 @@ class handler(BaseHTTPRequestHandler):  # noqa: N801
         if rota != "/api/lex":
             self._responder_json(404, {"erro": "rota nao encontrada"})
             return
-        tamanho = int(self.headers.get("Content-Length") or 0)
+        try:
+            tamanho = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            self._responder_json(400, {"erro": "Content-Length invalido"})
+            return
         if tamanho <= 0 or tamanho > sl.LIMITE_CORPO_BYTES:
             self._responder_json(413, {"erro": "corpo ausente ou acima do limite"})
             return

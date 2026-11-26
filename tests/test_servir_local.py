@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import http.client
 import json
 import threading
 import urllib.error
+import urllib.parse
 import urllib.request
 from collections.abc import Iterator
 from pathlib import Path
@@ -170,3 +172,12 @@ def test_api_http_config_lex_e_erros(servidor: str) -> None:
     assert _post(f"{servidor}/api/lex", b"[1]")[0] == 400
     assert _post(f"{servidor}/api/lex", b"")[0] == 413
     assert _post(f"{servidor}/api/outra", b"{}")[0] == 404
+
+    partes = urllib.parse.urlparse(servidor)
+    conn = http.client.HTTPConnection(partes.hostname or "127.0.0.1", partes.port or 80)
+    try:
+        conn.request("POST", "/api/lex", body=b"{}", headers={"Content-Length": "abc"})
+        resp_bad = conn.getresponse()
+        assert resp_bad.status == 400
+    finally:
+        conn.close()

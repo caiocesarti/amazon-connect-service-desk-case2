@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+import yaml
 
 import busca
 import casos
@@ -394,3 +395,22 @@ def test_log_estruturado_zero_pii(caplog: pytest.LogCaptureFixture) -> None:
     assert isinstance(payload["latencia_ms"], float)
     assert "NT1001" not in caplog.records[0].message
     assert "4821" not in caplog.records[0].message
+
+
+def test_paridade_template_sam_com_config_lambda() -> None:
+    """Garante que o template AWS SAM injeta as mesmas variáveis lidas por config.py."""
+    caminho_sam = Path(__file__).resolve().parent.parent / "infra" / "template.yaml"
+    template = yaml.safe_load(caminho_sam.read_text(encoding="utf-8"))
+
+    fn_global = template["Globals"]["Function"]
+    assert fn_global["Runtime"] == "python3.12"
+    assert fn_global["Architectures"] == ["arm64"]
+
+    props = template["Resources"]["ServiceDeskFulfillmentFunction"]["Properties"]
+    assert props["Handler"] == "handler.lambda_handler"
+    env_vars = props["Environment"]["Variables"]
+    assert {"CASES_DRY_RUN", "CASES_DOMAIN_ID", "CASES_TEMPLATE_ID", "LOG_LEVEL"} <= set(env_vars)
+
+    params = template["Parameters"]
+    assert params["ConnectCasesDomainId"]["Default"].startswith("<")
+    assert params["ConnectCasesTemplateId"]["Default"].startswith("<")

@@ -163,7 +163,11 @@ class ManipuladorSimulador(SimpleHTTPRequestHandler):
         if self.path.split("?")[0] != "/api/lex":
             self._responder_json(404, {"erro": "rota inexistente"})
             return
-        tamanho = int(self.headers.get("Content-Length") or 0)
+        try:
+            tamanho = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            self._responder_json(400, {"erro": "Content-Length inválido"})
+            return
         if tamanho <= 0 or tamanho > LIMITE_CORPO_BYTES:
             self._responder_json(413, {"erro": "corpo ausente ou acima do limite"})
             return

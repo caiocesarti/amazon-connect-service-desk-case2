@@ -12,11 +12,11 @@ Parameters:
     Description: "true executa em modo simulação sem chamadas à API Connect Cases."
   ConnectCasesDomainId:
     Type: String
-    Default: "dom-exemplo-servicedesk"
+    Default: "<CASES_DOMAIN_ID>"
     Description: "Identificador do domínio do Amazon Connect Cases (use placeholder em estudo)."
   ConnectCasesTemplateId:
     Type: String
-    Default: "tpl-exemplo-servicedesk"
+    Default: "<CASES_TEMPLATE_ID>"
     Description: "Identificador do template de chamados no Amazon Connect Cases."
 
 Globals:
@@ -25,7 +25,7 @@ Globals:
     Timeout: 10
     MemorySize: 256
     Architectures:
-      - x86_64
+      - arm64
 
 Resources:
   ServiceDeskLogGroup:
@@ -46,10 +46,11 @@ Resources:
         Variables:
           CASES_DRY_RUN:
             Ref: CasesDryRun
-          CONNECT_CASES_DOMAIN_ID:
+          CASES_DOMAIN_ID:
             Ref: ConnectCasesDomainId
-          CONNECT_CASES_TEMPLATE_ID:
+          CASES_TEMPLATE_ID:
             Ref: ConnectCasesTemplateId
+          LOG_LEVEL: INFO
       Policies:
         - Statement:
             - Sid: ConnectCasesLeastPrivilege

@@ -46,6 +46,7 @@ DIRETORIOS_IGNORADOS = {
     "__pycache__",
     ".pytest_cache",
     ".ruff_cache",
+    ".mypy_cache",
     "htmlcov",
     "dist",
 }

@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import http.client
 import json
 import threading
 import urllib.error
+import urllib.parse
 import urllib.request
 from collections.abc import Iterator
 from http.server import ThreadingHTTPServer
@@ -24,6 +26,10 @@ def servidor_vercel(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator
     (dist / "assets" / "css" / "style.css").write_text("body { color: #fff; }", encoding="utf-8")
     (dist / "assets" / "js" / "app.js").write_text("console.log('ok');", encoding="utf-8")
     (dist / "robots.txt").write_text("User-agent: *", encoding="utf-8")
+    # Diretório irmão com mesmo prefixo para validar proteção contra prefix-traversal
+    irmao = tmp_path / "dist_privado"
+    irmao.mkdir()
+    (irmao / "segredo.txt").write_text("nao-expor", encoding="utf-8")
 
     monkeypatch.setattr(api_index, "PASTA_DIST", dist)
     srv = ThreadingHTTPServer(("127.0.0.1", 0), api_index.handler)
@@ -71,6 +77,9 @@ def test_vercel_serve_estaticos_e_bloqueia_path_traversal(servidor_vercel: str) 
     st_trav, _, _ = _get(f"{servidor_vercel}/../../pyproject.toml")
     assert st_trav == 404
 
+    st_irmao, _, _ = _get(f"{servidor_vercel}/../dist_privado/segredo.txt")
+    assert st_irmao == 404
+
 
 def test_vercel_api_config_lex_e_tratamento_erros(servidor_vercel: str) -> None:
     st_cfg, ctype_cfg, body_cfg = _get(f"{servidor_vercel}/api/config")
@@ -90,3 +99,12 @@ def test_vercel_api_config_lex_e_tratamento_erros(servidor_vercel: str) -> None:
     assert _post(f"{servidor_vercel}/api/lex", b"{quebrado")[0] == 400
     assert _post(f"{servidor_vercel}/api/lex", b"[1, 2]")[0] == 400
     assert _post(f"{servidor_vercel}/api/lex", b"")[0] == 413
+
+    partes = urllib.parse.urlparse(servidor_vercel)
+    conn = http.client.HTTPConnection(partes.hostname or "127.0.0.1", partes.port or 80)
+    try:
+        conn.request("POST", "/api/lex", body=b"{}", headers={"Content-Length": "invalido"})
+        resp_bad = conn.getresponse()
+        assert resp_bad.status == 400
+    finally:
+        conn.close()
