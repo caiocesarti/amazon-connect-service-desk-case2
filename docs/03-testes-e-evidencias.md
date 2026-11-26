@@ -9,15 +9,18 @@ Este documento orienta a validação prática dos cenários obrigatórios do **C
 Antes de testar no console AWS, execute a bateria completa de validação local:
 
 ```bash
+ruff check .
+mypy lambda/sd_fulfillment scripts api
 python scripts/verificar_segredos.py
 python scripts/validar_dataset.py
 python scripts/validar_flows.py
 python scripts/empacotar_lambda.py
+python scripts/gerar_pacote_lex.py
 python scripts/injetar_widget.py
 pytest
 ```
 
-Resultado esperado: **0 erros de lint (`ruff`), 0 achados Zero-Leak e 100% dos testes passando com cobertura > 90%**.
+Resultado esperado: **0 erros de lint (`ruff`) e tipagem (`mypy`), 0 achados Zero-Leak e 100% dos testes passando com cobertura >= 90%**.
 
 ---
 

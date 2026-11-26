@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/AWS-Amazon%20Connect-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" alt="AWS" />
   <img src="https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/Amazon%20Lex%20V2-pt__BR%20%7C%20Camila-4F46E5?style=for-the-badge" alt="Lex" />
-  <img src="https://img.shields.io/badge/Coverage-94.9%25-2EA44F?style=for-the-badge" alt="Tests" />
+  <img src="https://img.shields.io/badge/Coverage-94.96%25-2EA44F?style=for-the-badge" alt="Tests" />
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License" />
 </p>
 
@@ -85,12 +85,12 @@ flowchart TD
 
 | # | Expected Deliverable | Technical Implementation in Repository |
 |---|---|---|
-| **1** | **Amazon Connect Flow with $\ge$ 3 Amazon Lex Intents (`PasswordReset`, `NetworkIssue`, `HardwareRequest`)** | Contact Flow [`SD-Entrada-Principal.json`](connect/flows/SD-Entrada-Principal.json) integrated with [`lex/bot-export.json`](lex/bot-export.json) (`pt_BR`, neural voice `Camila`, 6 intents, custom slot types in [`lex/slot-types.json`](lex/slot-types.json)), and import bundler [`scripts/gerar_pacote_lex.py`](scripts/gerar_pacote_lex.py). |
+| **1** | **Amazon Connect Flow with ≥ 3 Amazon Lex Intents (`PasswordReset`, `NetworkIssue`, `HardwareRequest`)** | Contact Flow [`SD-Entrada-Principal.json`](connect/flows/SD-Entrada-Principal.json) integrated with [`lex/bot-export.json`](lex/bot-export.json) (`pt_BR`, neural voice `Camila`, 6 intents, custom slot types in [`lex/slot-types.json`](lex/slot-types.json)), and import bundler [`scripts/gerar_pacote_lex.py`](scripts/gerar_pacote_lex.py). |
 | **2** | **Segmented queues per incident category with automated routing** | 5 queues defined in [`connect/recursos.yaml`](connect/recursos.yaml) (`SD-Fila-Seguranca`, `SD-Fila-Redes`, `SD-Fila-Hardware`, `SD-Fila-Geral-N1`, `SD-Fila-Prioritaria-P1`), routing logic in [`lambda/sd_fulfillment/chamados.py`](lambda/sd_fulfillment/chamados.py), and contextual transfer via [`SD-Transbordo-N1.json`](connect/flows/SD-Transbordo-N1.json) + [`SD-Sussurro-Agente.json`](connect/flows/SD-Sussurro-Agente.json). |
 | **3** | **Amazon Connect Cases integration (auto-creation, category & priority)** | Idempotent adapter [`lambda/sd_fulfillment/casos.py`](lambda/sd_fulfillment/casos.py) with ITIL priority matrix (`P1`–`P4`) and field template [`connect/cases/template-chamado.json`](connect/cases/template-chamado.json). |
 | **4** | **Amazon Contact Lens for transcription & sentiment analysis** | Negative-sentiment rules (EventBridge supervisor alert), real-time P1 detection, PII/PIN redaction, and FCR confirmation rules in [`connect/contact-lens/regras.json`](connect/contact-lens/regras.json). |
 | **5** | **FCR & AHT (TMA) metrics visible to supervisors** | Targets and bot containment tracking (`sd_resolvido_bot`) in [`connect/recursos.yaml`](connect/recursos.yaml), live visualization in the **Supervisor Dashboard** ([`landing/index.html`](landing/index.html)), and verification playbook in [`docs/03-testes-e-evidencias.md`](docs/03-testes-e-evidencias.md). |
-| **+** | **Additional Lab Engineering Practices** | `shadcn/ui`-inspired portal ([`landing/`](landing/)) with FinOps interaction cap ([`scripts/injetar_widget.py`](scripts/injetar_widget.py)), 5 operational runbooks in [`kb/`](kb/) for Amazon Q in Connect, structured Zero-PII JSON logging, AWS SAM template ([`infra/template.yaml`](infra/template.yaml)), Zero-Leak scanner ([`scripts/verificar_segredos.py`](scripts/verificar_segredos.py)), and CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). |
+| **+** | **Additional Lab Engineering Practices** | `shadcn/ui`-inspired portal ([`landing/`](landing/)) with FinOps interaction cap ([`scripts/injetar_widget.py`](scripts/injetar_widget.py)), 5 operational runbooks in [`kb/`](kb/) for Amazon Q in Connect, structured Zero-PII JSON logging, AWS SAM template ([`infra/template.yaml`](infra/template.yaml)), Zero-Leak scanner ([`scripts/verificar_segredos.py`](scripts/verificar_segredos.py)), AI-assisted engineering guardrails ([`.agent/`](.agent/rules/padroes-projeto.md)), and CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). |
 
 ---
 
@@ -98,6 +98,7 @@ flowchart TD
 
 ```text
 amazon-connect-service-desk-case2/
+├── .agent/                             # Engineering rules & slash workflows (/planejar, /testar, /revisar, /documentar)
 ├── .github/workflows/ci.yml            # CI Pipeline: Ruff, Mypy, Zero-Leak, Validators, Pytest >=90%, Gitleaks
 ├── README.md                           # Project documentation (Portuguese pt-BR)
 ├── README.en.md                        # Project documentation (English)
@@ -118,13 +119,13 @@ amazon-connect-service-desk-case2/
 │   ├── 01-arquitetura.md               # Detailed architecture, sd_* contract, and guardrails (pt-BR)
 │   ├── 02-passo-a-passo.md             # AWS + Vercel provisioning & FinOps teardown guide (pt-BR)
 │   └── 03-testes-e-evidencias.md       # E2E test scenarios (CT-01 to CT-14) and evidence gallery (pt-BR)
-├── infra/template.yaml                 # AWS SAM template (Python 3.12 Lambda, least-privilege IAM, 7d logs)
+├── infra/template.yaml                 # AWS SAM template (Python 3.12 arm64 Lambda, least-privilege IAM, 7d logs)
 ├── kb/                                 # 5 operational articles (KB-001 to KB-005) for Amazon Q in Connect
 ├── lambda/sd_fulfillment/              # Python 3.12 backend (stdlib + boto3, zero external dependencies)
 ├── landing/                            # Web Portal (Employee Portal + Supervisor Dashboard)
 ├── lex/                                # Lex V2 pt_BR bot definition and slot types
 ├── scripts/                            # DevSecOps automation, packaging, and local lab server
-├── tests/                              # Pytest suite (91 tests, 94.94% coverage including api/)
+├── tests/                              # Pytest suite (92 tests, 94.96% coverage including api/)
 └── vercel.json                         # CSP headers (Amazon Connect, CloudFront, Chime WebRTC) & static build
 ```
 
@@ -144,7 +145,7 @@ python -m venv .venv
 pip install -r requirements-dev.txt
 pre-commit install
 
-# 2. Run linter, static typing, Zero-Leak audit, validators, and unit tests (91 tests)
+# 2. Run linter, static typing, Zero-Leak audit, validators, and unit tests (92 tests)
 ruff check .
 mypy lambda/sd_fulfillment scripts api
 python scripts/verificar_segredos.py

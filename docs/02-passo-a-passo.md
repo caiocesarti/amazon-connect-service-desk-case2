@@ -274,7 +274,7 @@ Abra o painel da instância do Amazon Connect (`https://<INSTANCE_ALIAS>.my.conn
    - **Name:** `SD-Horario-Comercial`
    - **Time zone:** `America/Sao_Paulo`
    - Configure **Monday to Friday** das **08:00 AM** às **06:00 PM** (18:00).
-   -*(Dica para testes fora do horário comercial: enquanto estiver testando à noite ou fim de semana, você pode ampliar temporariamente para 24h para testar o recebimento na fila humana no CCP v2).*
+   - *(Dica para testes fora do horário comercial: enquanto estiver testando à noite ou fim de semana, você pode ampliar temporariamente para 24h para testar o recebimento na fila humana no CCP v2).*
    - Clique em **Save**.
 
 ### 5.2 Criar as 5 Filas Segmentadas por Tipo de Incidente

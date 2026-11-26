@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/AWS-Amazon%20Connect-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" alt="AWS" />
   <img src="https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/Amazon%20Lex%20V2-pt__BR%20%7C%20Camila-4F46E5?style=for-the-badge" alt="Lex" />
-  <img src="https://img.shields.io/badge/Coverage-94.9%25-2EA44F?style=for-the-badge" alt="Tests" />
+  <img src="https://img.shields.io/badge/Coverage-94.96%25-2EA44F?style=for-the-badge" alt="Tests" />
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License" />
 </p>
 
@@ -85,12 +85,12 @@ flowchart TD
 
 | # | Entregável Esperado | Implementação Técnica no Repositório |
 |---|---|---|
-| **1** | **Fluxo no Amazon Connect com $\ge$ 3 intenções no Amazon Lex (`PasswordReset`, `NetworkIssue`, `HardwareRequest`)** | Contact Flow [`SD-Entrada-Principal.json`](connect/flows/SD-Entrada-Principal.json) integrado ao bot [`lex/bot-export.json`](lex/bot-export.json) (`pt_BR`, voz neural `Camila`, 6 intenções e tipos de slots em [`lex/slot-types.json`](lex/slot-types.json)) e pacote de importação gerado por [`scripts/gerar_pacote_lex.py`](scripts/gerar_pacote_lex.py). |
+| **1** | **Fluxo no Amazon Connect com ≥ 3 intenções no Amazon Lex (`PasswordReset`, `NetworkIssue`, `HardwareRequest`)** | Contact Flow [`SD-Entrada-Principal.json`](connect/flows/SD-Entrada-Principal.json) integrado ao bot [`lex/bot-export.json`](lex/bot-export.json) (`pt_BR`, voz neural `Camila`, 6 intenções e tipos de slots em [`lex/slot-types.json`](lex/slot-types.json)) e pacote de importação gerado por [`scripts/gerar_pacote_lex.py`](scripts/gerar_pacote_lex.py). |
 | **2** | **Filas segmentadas por tipo de incidente com roteamento automático** | 5 filas declaradas em [`connect/recursos.yaml`](connect/recursos.yaml) (`SD-Fila-Seguranca`, `SD-Fila-Redes`, `SD-Fila-Hardware`, `SD-Fila-Geral-N1`, `SD-Fila-Prioritaria-P1`), lógica de roteamento em [`lambda/sd_fulfillment/chamados.py`](lambda/sd_fulfillment/chamados.py) e transferência contextual em [`SD-Transbordo-N1.json`](connect/flows/SD-Transbordo-N1.json) + [`SD-Sussurro-Agente.json`](connect/flows/SD-Sussurro-Agente.json). |
 | **3** | **Integração com Connect Cases (criação automática, categoria e prioridade)** | Adapter idempotente [`lambda/sd_fulfillment/casos.py`](lambda/sd_fulfillment/casos.py) com matriz de prioridade ITIL (`P1`–`P4`) e schema [`connect/cases/template-chamado.json`](connect/cases/template-chamado.json). |
 | **4** | **Contact Lens para transcrição e análise de sentimento** | Regras de sentimento negativo (alerta EventBridge ao supervisor), detecção P1 em tempo real, redação de PII/PIN e confirmação de FCR em [`connect/contact-lens/regras.json`](connect/contact-lens/regras.json). |
 | **5** | **Métricas de FCR e TMA disponíveis para o supervisor** | Metas e rastreamento (`sd_resolvido_bot`) em [`connect/recursos.yaml`](connect/recursos.yaml), visualização em tempo real no **Painel do Supervisor** em [`landing/index.html`](landing/index.html) e roteiro de verificação em [`docs/03-testes-e-evidencias.md`](docs/03-testes-e-evidencias.md). |
-| **+** | **Recursos Adicionais do Laboratório** | Portal de estudo estilo `shadcn/ui` ([`landing/`](landing/)) com limite de interações FinOps ([`scripts/injetar_widget.py`](scripts/injetar_widget.py)), 5 runbooks em [`kb/`](kb/) para Amazon Q in Connect, scanner [`scripts/verificar_segredos.py`](scripts/verificar_segredos.py) e CI/CD ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). |
+| **+** | **Recursos Adicionais do Laboratório** | Portal de estudo estilo `shadcn/ui` ([`landing/`](landing/)) com limite de interações FinOps ([`scripts/injetar_widget.py`](scripts/injetar_widget.py)), 5 runbooks em [`kb/`](kb/) para Amazon Q in Connect, template AWS SAM ([`infra/template.yaml`](infra/template.yaml)), scanner [`scripts/verificar_segredos.py`](scripts/verificar_segredos.py), governança de engenharia assistida por IA ([`.agent/`](.agent/rules/padroes-projeto.md)) e CI/CD ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). |
 
 ---
 
@@ -98,6 +98,7 @@ flowchart TD
 
 ```text
 amazon-connect-service-desk-case2/
+├── .agent/                             # Regras de engenharia e workflows (/planejar, /testar, /revisar, /documentar)
 ├── .github/workflows/ci.yml            # Pipeline CI: Ruff, Mypy, Zero-Leak, Validações, Pytest >=90% e Gitleaks
 ├── README.md                           # Documentação principal do projeto (pt-BR)
 ├── README.en.md                        # English version of the project README
@@ -118,13 +119,13 @@ amazon-connect-service-desk-case2/
 │   ├── 01-arquitetura.md               # Arquitetura detalhada, contrato sd_* e guardrails
 │   ├── 02-passo-a-passo.md             # Guia de provisionamento AWS + Vercel
 │   └── 03-testes-e-evidencias.md       # Roteiro de testes E2E (CT-01 a CT-14) e evidências
-├── infra/template.yaml                 # Template AWS SAM (Lambda Python 3.12, IAM least privilege, Logs 7d)
+├── infra/template.yaml                 # Template AWS SAM (Lambda Python 3.12 arm64, IAM least privilege, Logs 7d)
 ├── kb/                                 # 5 artigos operacionais (KB-001 a KB-005) para Amazon Q in Connect
 ├── lambda/sd_fulfillment/              # Backend Python 3.12 (stdlib + boto3, zero deps externas)
 ├── landing/                            # Portal Web (Portal do Colaborador + Painel do Supervisor)
 ├── lex/                                # Definição do bot pt_BR e tipos de slots
 ├── scripts/                            # Automação DevSecOps, empacotamento e servidor local do laboratório
-├── tests/                              # Suíte Pytest (91 testes, >94% de cobertura incl. api/)
+├── tests/                              # Suíte Pytest (92 testes, 94,96% de cobertura incl. api/)
 └── vercel.json                         # CSP (Amazon Connect, CloudFront, Chime WebRTC) e saída estática
 ```
 
@@ -144,7 +145,7 @@ python -m venv .venv
 pip install -r requirements-dev.txt
 pre-commit install
 
-# 2. Executar lint, tipagem estática, auditoria Zero-Leak, validações e testes (91 testes)
+# 2. Executar lint, tipagem estática, auditoria Zero-Leak, validações e testes (92 testes)
 ruff check .
 mypy lambda/sd_fulfillment scripts api
 python scripts/verificar_segredos.py
