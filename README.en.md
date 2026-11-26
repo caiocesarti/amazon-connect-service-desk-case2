@@ -115,7 +115,7 @@ amazon-connect-service-desk-case2/
 ├── docs/
 │   ├── assets/                         # Header SVG banner and AWS architecture diagram
 │   ├── img/                            # Sanitized screenshots from AWS Console, CCP, and Web Portal
-│   ├── adr/                            # Architecture Decision Records (ADR-001, ADR-002)
+│   ├── adr/                            # Architecture Decision Records (ADR-001 to ADR-005)
 │   ├── 01-arquitetura.md               # Detailed architecture, sd_* contract, and guardrails (pt-BR)
 │   ├── 02-passo-a-passo.md             # AWS + Vercel provisioning & FinOps teardown guide (pt-BR)
 │   └── 03-testes-e-evidencias.md       # E2E test scenarios (CT-01 to CT-14) and evidence gallery (pt-BR)
@@ -166,7 +166,7 @@ Open **[http://localhost:8080](http://localhost:8080)** to explore the implement
 
 ## 6. Lab Evidence (AWS Sandbox + Portal)
 
-> Screenshots captured during testing in an AWS sandbox account (`us-west-2`), integrating the web portal, Amazon Lex V2, Python Lambda, WebRTC voice calls, and live agent handoff to the Contact Control Panel (CCP):
+> Screenshots captured during testing in an AWS sandbox account (`us-east-1`), integrating the web portal, Amazon Lex V2, Python Lambda, WebRTC voice calls, and live agent handoff to the Contact Control Panel (CCP):
 
 | Employee Portal (`Atendimento Online`) | Supervisor Dashboard (`FCR` & `AHT`) |
 |---|---|
@@ -190,6 +190,7 @@ See all 9 lab screenshots and validated flows in **[docs/03-testes-e-evidencias.
 - **[docs/02-passo-a-passo.md](docs/02-passo-a-passo.md)** — Full AWS + Vercel provisioning and FinOps teardown guide *(pt-BR)*.
 - **[docs/03-testes-e-evidencias.md](docs/03-testes-e-evidencias.md)** — End-to-end test scenarios (`CT-01` to `CT-14`) and evidence gallery *(pt-BR)*.
 - **[SECURITY.md](SECURITY.md)** — DevSecOps Zero-Leak policy *(pt-BR)*.
+- **ADRs (Architecture Decision Records, *pt-BR*):** [ADR-001 Zero-Leak](docs/adr/ADR-001-politica-zero-leak.md) · [ADR-002 Naming & Routing](docs/adr/ADR-002-nomenclatura-e-roteamento.md) · [ADR-003 Zero-Deps Lambda & Idempotency](docs/adr/ADR-003-lambda-zero-deps-e-idempotencia.md) · [ADR-004 Deterministic Guardrails & Zero-PII](docs/adr/ADR-004-guardrails-deterministicos-e-zero-pii.md) · [ADR-005 Widget FinOps & Single Source of Truth](docs/adr/ADR-005-finops-widget-e-fonte-unica-de-verdade.md).
 
 ---
 
